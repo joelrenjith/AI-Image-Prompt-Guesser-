@@ -123,6 +123,11 @@ img_link = data.decode()
 r = requests.get(img_link,allow_redirects=True)
 open('img.jpg','wb').write(r.content)
 ans,addr=mySocket.recvfrom(1024)
+disp_ans  =''
+for i in ans:
+    if i == ' ':
+        disp_ans+=i+' '
+    disp_ans+=' '
 # load image to be "edited"
 image  = PIL.Image.open("img.jpg")
 resize_image = image.resize((450,500))
@@ -130,7 +135,7 @@ img = ImageTk.PhotoImage(resize_image)
 # Display image in right_frame
 pb.stop()
 pb.destroy()
-user_name = Label(top_frame,text = ans, font=fontObj).grid(row=0,column=0, padx=10, pady=10)
+user_name = Label(top_frame,text = disp_ans, font=fontObj).grid(row=0,column=0, padx=10, pady=10)
 timr = Label(top_frame,textvariable=my_var,fg='Red', font=fontObj1)
 timr.grid(row = 0,column=1, padx=10, pady=10)
 Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
