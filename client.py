@@ -44,7 +44,7 @@ def addtohistory():
     inp.delete(0, END)
 
 def updatetime():
-    t = 10
+    t = 20
     global my_var
     my_var.set(str(t))
    

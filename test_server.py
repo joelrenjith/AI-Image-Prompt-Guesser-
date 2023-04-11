@@ -33,8 +33,10 @@ try:
     options = Options()
     options.binary_location = r'C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe'
     options.accept_insecure_certs = True
+    options.headless = True
     driver = webdriver.Chrome( service = PATH,options = options)
     driver.get('https://freeimagegenerator.com/')
+    print('opened website..waiting for sign in')
     sign = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/nav/div[3]/div/div[2]/ul/li/a"))).click()
     art = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/a[1]"))).click()
     user = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/form/div/div[1]/input"))).send_keys(ch)
@@ -42,15 +44,19 @@ try:
     pswrd.send_keys(dic[ch])
     login  =driver.find_element(By.XPATH,"/html/body/div[2]/div/form/div/div[3]/a")
     login.click()
+    print('sign in done')
     head = WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH,"/html/body/header/div/div/div[1]/a[1]"))).click()
     prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
     l = list(df_new.sample(n=2))
     s=" ".join(l)
+    s= s.lower()
     print(s)
     copy = ''
     prompt.send_keys(s)
     prompt.send_keys(Keys.ENTER)
+    print('enterred prompt')
     img = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[6]/button[1]"))).click()
+    print('got results...waiting for image')
     element = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[2]/div[6]/a/img")))
     src  = driver.find_element(By.XPATH,"/html/body/div[2]/div/div[2]/div[6]/a/img").get_attribute("src")
     print(src+ "\n\n")
