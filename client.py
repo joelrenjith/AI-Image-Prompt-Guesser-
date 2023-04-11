@@ -4,7 +4,7 @@ import requests
 import PIL.Image
 from PIL import ImageTk
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox,ttk
 import tkinter.font as tkFont
 import time
 import threading
@@ -23,11 +23,7 @@ while i < 10:
     i = i + 1
 
 mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-data,addr = mySocket.recvfrom(1024)
-img_link = data.decode()
-r = requests.get(img_link,allow_redirects=True)
-open('img.jpg','wb').write(r.content)
-ans,addr=mySocket.recvfrom(1024);
+
 
 
 def addtohistory():
@@ -70,9 +66,7 @@ root.config(bg="#b7e2f3")  # specify background color
 # Create left,right and top frames
 top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
 top_frame.grid(row=0, column=0, padx=10, pady=10)
-user_name = Label(top_frame,text = ans, font=fontObj).grid(row=0,column=0, padx=10, pady=10)
-timr = Label(top_frame,textvariable=my_var,fg='Red', font=fontObj1)
-timr.grid(row = 0,column=1, padx=10, pady=10)
+
 subframe= Frame(root, width = 700, height= 400)
 subframe.grid(row=1, column=0, padx=10, pady=10)
 
@@ -94,12 +88,16 @@ inp.grid(row=1, column=0, padx=1, pady=1)
 send = Button(inpframe, text="Submit", bg='#E2E5DE', command=addtohistory)
 send.grid(row=1, column=1, padx=1, pady=1)
 
-# load image to be "edited"
-image  = PIL.Image.open("img.jpg")
-resize_image = image.resize((450,500))
-img = ImageTk.PhotoImage(resize_image)
-# Display image in right_frame
-Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
+pb = ttk.Progressbar(
+    left_frame,
+    orient='horizontal',
+    mode='indeterminate',
+    length=280
+)
+# place the progressbar
+pb.grid(row=0,column=0, padx=5, pady=5)
+pb.start()
+
 
 
 listbox = Listbox(history, width=55, height=30)
@@ -119,6 +117,23 @@ scrollbar.pack(side = RIGHT, fill = BOTH)
 listbox.config(yscrollcommand = scrollbar.set)
   
 scrollbar.config(command = listbox.yview)
+
+data,addr = mySocket.recvfrom(1024)
+img_link = data.decode()
+r = requests.get(img_link,allow_redirects=True)
+open('img.jpg','wb').write(r.content)
+ans,addr=mySocket.recvfrom(1024)
+# load image to be "edited"
+image  = PIL.Image.open("img.jpg")
+resize_image = image.resize((450,500))
+img = ImageTk.PhotoImage(resize_image)
+# Display image in right_frame
+pb.stop()
+pb.destroy()
+user_name = Label(top_frame,text = ans, font=fontObj).grid(row=0,column=0, padx=10, pady=10)
+timr = Label(top_frame,textvariable=my_var,fg='Red', font=fontObj1)
+timr.grid(row = 0,column=1, padx=10, pady=10)
+Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
 t1 = threading.Thread(target=updatetime)
 t1.start()
 root.mainloop()

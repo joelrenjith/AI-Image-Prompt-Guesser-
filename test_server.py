@@ -88,7 +88,7 @@ try:
         if check.decode().lower()==s.lower():
             msg = 'you goddit!!'
             mySocket.sendto(msg.encode('utf-8'),(addr))
-            break
+            
         else:
             mySocket.sendto(check,(addr))
         # mySocket.sendto(bit.encode('utf-8'),(addr))
