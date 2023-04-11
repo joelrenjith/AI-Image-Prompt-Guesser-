@@ -23,8 +23,13 @@ while i < 10:
     i = i + 1
 
 mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-
-
+data,addr = mySocket.recvfrom(1024)
+img_link = data.decode()
+r = requests.get(img_link,allow_redirects=True)
+open('img.jpg','wb').write(r.content)
+ans,addr=mySocket.recvfrom(1024)
+print(ans.decode())
+print(1)
 
 def addtohistory():
     global I_C
@@ -37,13 +42,17 @@ def addtohistory():
     # print(msg ,"\n", inp.get())
     if msg!=inp.get():
         listbox.itemconfig(I_C,{'fg':'Green'})
+        correct,addr = mySocket.recvfrom(1024)
+        messagebox.showinfo('Game over','Answer = '+correct.decode())
+        root.destroy
     board ,addr = mySocket.recvfrom(1024)
+    print("new =",board.decode())
     show_prmpt.set(board.decode())
     root.update()
     inp.delete(0, END)
 
 def updatetime():
-    t = 20
+    t = 60
     global my_var
     my_var.set(str(t))
    
@@ -77,6 +86,19 @@ subframe.grid(row=1, column=0, padx=10, pady=10)
 left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
 left_frame.grid(row=0, column=0, padx=2, pady=2)
 
+show_prmpt.set((ans.decode()))
+# load image to be "edited"
+image  = PIL.Image.open("img.jpg")
+resize_image = image.resize((450,500))
+img = ImageTk.PhotoImage(resize_image)
+print(ans.decode())
+# Display image in right_frame
+user_name = Label(top_frame,textvariable=show_prmpt, font=fontObj).grid(row=0,column=0, padx=10, pady=10)
+
+timr = Label(top_frame,textvariable=my_var,fg='Red', font=fontObj1)
+timr.grid(row = 0,column=1, padx=10, pady=10)
+Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
+
 right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
 right_frame.grid(row=0, column=1, padx=2, pady=2)
 
@@ -92,15 +114,6 @@ inp.grid(row=1, column=0, padx=1, pady=1)
 send = Button(inpframe, text="Submit", bg='#E2E5DE', command=addtohistory)
 send.grid(row=1, column=1, padx=1, pady=1)
 
-pb = ttk.Progressbar(
-    left_frame,
-    orient='horizontal',
-    mode='indeterminate',
-    length=280
-)
-# place the progressbar
-pb.grid(row=0,column=0, padx=5, pady=5)
-pb.start()
 
 
 
@@ -122,23 +135,8 @@ listbox.config(yscrollcommand = scrollbar.set)
   
 scrollbar.config(command = listbox.yview)
 
-data,addr = mySocket.recvfrom(1024)
-img_link = data.decode()
-r = requests.get(img_link,allow_redirects=True)
-open('img.jpg','wb').write(r.content)
-ans,addr=mySocket.recvfrom(1024)
-show_prmpt.set(ans.decode())
-# load image to be "edited"
-image  = PIL.Image.open("img.jpg")
-resize_image = image.resize((450,500))
-img = ImageTk.PhotoImage(resize_image)
-# Display image in right_frame
-pb.stop()
-pb.destroy()
-user_name = Label(top_frame,text = show_prmpt, font=fontObj).grid(row=0,column=0, padx=10, pady=10)
-timr = Label(top_frame,textvariable=my_var,fg='Red', font=fontObj1)
-timr.grid(row = 0,column=1, padx=10, pady=10)
-Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
+
+
 t1 = threading.Thread(target=updatetime)
 t1.start()
 root.mainloop()

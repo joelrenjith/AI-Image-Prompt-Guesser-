@@ -25,13 +25,13 @@ def convert(copy):
     for i in copy:
         if i == ' ':
             disp_ans+=i+' '
-        disp_ans+=' '
+        disp_ans+=i+' '
     return disp_ans
 
 (data,addr) = mySocket.recvfrom(SIZE)
 print(addr)
 try:
-    dic = {'joelrenjith10@gmail.com':'SDDZFYUN','diyx19@gmail.com':'Joel1234','garimangangwani@gmail.com':'HHYUZCVU'}
+    dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'SDDZFYUN','diyx19@gmail.com':'Joel1234','garimangangwani@gmail.com':'HHYUZCVU'}
     ch = random.choice(list(dic))
     print(ch)
     df = pd.read_csv(r'Skribbl-words.csv')
@@ -66,6 +66,7 @@ try:
     print('got results...waiting for image')
     element = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[2]/div[6]/a/img")))
     src  = driver.find_element(By.XPATH,"/html/body/div[2]/div/div[2]/div[6]/a/img").get_attribute("src")
+
     print(src+ "\n\n")
     mySocket.sendto(src.encode('utf-8'),(addr))
     print('sent img')
@@ -80,13 +81,13 @@ try:
         else:
             copy+=i
         
-    
+    print(convert(copy))
     mySocket.sendto(convert(copy).encode('utf-8'),(addr))
     print('sent strig')
     # with open('filename.png', 'wb') as file:
     #     file.write(driver.find_element(By.XPATH,'/html/body/div[2]/div/div[2]/div[4]/a/img').screenshot_as_png)
-    head = WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH,"/html/body/header/div/div/div[1]/a[1]"))).click()
-    # prompt =  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
+    head =WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH,"/html/body/header/div/div/div[1]/a[1]"))).click()
+    # prompt =   WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
     while(1):
         check,addr = mySocket.recvfrom(SIZE)
         check = check.decode().lower()
@@ -97,14 +98,16 @@ try:
             msg = 'you goddit!!'
             mySocket.sendto(msg.encode('utf-8'),(addr))
             mySocket.sendto(s.encode('utf-8'),(addr))
+            break
         else:
             if check in s:
+                print(copy)
                 for m in re.finditer(check, s):
                     print(check, 'matched from position', m.start(), 'to', m.end())
-                copy.replace(copy[m.start():m.end()],check)
+                copy  = copy.replace(copy[m.start():m.end()],check)
                 print(copy)
   
-            mySocket.sendto(check,(addr))
+            mySocket.sendto(check.encode('utf-8'),(addr))
             mySocket.sendto(convert(copy).encode('utf-8'),(addr))
         # mySocket.sendto(bit.encode('utf-8'),(addr))
         
