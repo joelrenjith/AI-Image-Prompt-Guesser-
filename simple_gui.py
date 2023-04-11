@@ -62,8 +62,8 @@ def updatetime():
         time.sleep(1)
 root = Tk()  # create root window
 my_var = StringVar()
-fontObj = tkFont.Font(size=28)
-fontObj1 = tkFont.Font(size=35)
+sz28 = tkFont.Font(size=28)
+sz35 = tkFont.Font(size=35)
 
 root.title("Basic GUI Layout")  # title of the GUI window
 root.maxsize(1300, 1300)  # specify the max size the window can expand to
@@ -72,8 +72,8 @@ root.config(bg="#b7e2f3")  # specify background color
 # Create left,right and top frames
 top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100)
 top_frame.grid(row=0, column=0, padx=10, pady=10)
-user_name = Label(top_frame,text = ans, font=fontObj).grid(row=0,column=0, padx=10, pady=10)
-timr = Label(top_frame,textvariable=my_var,fg='Red', font=fontObj1)
+user_name = Label(top_frame,text = ans, font=sz28).grid(row=0,column=0, padx=10, pady=10)
+timr = Label(top_frame,textvariable=my_var,fg='Red', font=sz35)
 timr.grid(row = 0,column=1, padx=10, pady=10)
 
 subframe= Frame(root, width = 700, height= 400)
