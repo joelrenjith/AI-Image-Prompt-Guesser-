@@ -31,7 +31,7 @@ def convert(copy):
 (data,addr) = mySocket.recvfrom(SIZE)
 print(addr)
 try:
-    dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'SDDZFYUN','diyx19@gmail.com':'Joel1234','garimangangwani@gmail.com':'HHYUZCVU'}
+    dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','diyx19@gmail.com':'Joel1234','garimangangwani@gmail.com':'HHYUZCVU'}
     ch = random.choice(list(dic))
     print(ch)
     df = pd.read_csv(r'Skribbl-words.csv')
@@ -46,9 +46,9 @@ try:
     print('opened website..waiting for sign in')
     sign = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/nav/div[3]/div/div[2]/ul/li/a"))).click()
     art = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/a[1]"))).click()
-    user = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/form/div/div[1]/input"))).send_keys(ch)
+    user = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/form/div/div[1]/input"))).send_keys('joelrenjith10@gmail.com')
     pswrd = driver.find_element(By.XPATH,"/html/body/div[2]/div/form/div/div[2]/input")
-    pswrd.send_keys(dic[ch])
+    pswrd.send_keys(dic['joelrenjith10@gmail.com'])
     login  =driver.find_element(By.XPATH,"/html/body/div[2]/div/form/div/div[3]/a")
     login.click()
     print('sign in done')
@@ -100,13 +100,17 @@ try:
             mySocket.sendto(s.encode('utf-8'),(addr))
             break
         else:
-            if check in s:
+            if check in s and len(check)>0:
                 print(copy)
                 for m in re.finditer(check, s):
                     print(check, 'matched from position', m.start(), 'to', m.end())
                 copy  = copy.replace(copy[m.start():m.end()],check)
                 print(copy)
-  
+            if copy == s:
+                msg = 'you goddit!!'
+                mySocket.sendto(msg.encode('utf-8'),(addr))
+                mySocket.sendto(s.encode('utf-8'),(addr))
+                break
             mySocket.sendto(check.encode('utf-8'),(addr))
             mySocket.sendto(convert(copy).encode('utf-8'),(addr))
         # mySocket.sendto(bit.encode('utf-8'),(addr))
@@ -116,6 +120,6 @@ try:
 
 except Exception as e:
     print(e)
-
-
+input()
+driver.quit()
 
