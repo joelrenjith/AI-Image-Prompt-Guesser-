@@ -70,7 +70,7 @@ def updatetime():
     root.destroy()
     quit()
 
-def on_resize(event):
+def on_resize(e):
     ph = PIL.Image.open('background.webp') # load the background image
     #l = Label(root)
     imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
