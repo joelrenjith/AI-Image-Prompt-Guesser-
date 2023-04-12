@@ -13,7 +13,7 @@ while i < 10:
     i = i + 1
 
 mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-mySocket.recv(1024)
+print(mySocket.recv(1024).decode())
 user = input()
 mySocket.sendto(user.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
 ans  = mySocket.recv(1024)
