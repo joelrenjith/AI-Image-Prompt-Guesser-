@@ -9,7 +9,7 @@ import tkinter.font as tkFont
 import time
 import threading
 I_C=-1
-SERVER_IP   = '192.168.11.197'
+SERVER_IP   = '192.168.35.197'
 PORT_NUMBER = 5000
 SIZE = 1024
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
@@ -70,30 +70,36 @@ def updatetime():
     root.destroy()
     quit()
 
+def on_resize(event):
+    ph = PIL.Image.open('background.webp') # load the background image
+    #l = Label(root)
+    imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
+    bgimg = ImageTk.PhotoImage(imgb)
+    l = Label(root, image=bgimg)
+    l.config(image=bgimg)
+    print("///////////////////////////////////\n")
+    print("The width of Tkinter window:", root.winfo_width())
+    print("\nThe height of Tkinter window:", root.winfo_height())
+    print("\n///////////////////////////////////\n")
+
 root = Tk()  # create root window
 my_var = StringVar()
 show_prmpt = StringVar()
-fontObj = tkFont.Font(size=28)
-fontObj1 = tkFont.Font(size=35)
+sz28 = tkFont.Font(size=28)
+sz35 = tkFont.Font(size=35)
 root.title("Guess the Prompt")  # title of the GUI window
 root.maxsize(1300, 1300)  # specify the max size the window can expand to
 
-'''
-///////////////////////////////////
-root.config(bg="#b7e2f3")  # specify background color
-//////////////////////////////////
-'''
+ph = PIL.Image.open('background.webp') # load the background image
+#l = Label(root)
+imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
+bgimg = ImageTk.PhotoImage(imgb)
+l = Label(root, image=bgimg)
+l.config(image=bgimg)
+l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
+  # specify background color
 
-bg = PhotoImage(file = "background.png")
-  
-# Create Canvas
-canvas1 = Canvas( root)
-  
-canvas1.pack(fill = "both", expand = True)
-  
-# Display image
-canvas1.create_image( 0, 0, image = bg, 
-                     anchor = "nw")
 
 root.bind('<Return>',addtohistory)
 # Create left,right and top frames
@@ -113,9 +119,9 @@ resize_image = image.resize((450,500))
 img = ImageTk.PhotoImage(resize_image)
 print(ans.decode())
 # Display image in right_frame
-user_name = Label(top_frame,textvariable=show_prmpt, font=fontObj).grid(row=0,column=0, padx=10, pady=10)
+user_name = Label(top_frame,textvariable=show_prmpt, font=sz28).grid(row=0,column=0, padx=10, pady=10)
 
-timr = Label(top_frame,textvariable=my_var,fg='Red', font=fontObj1)
+timr = Label(top_frame,textvariable=my_var,fg='Red', font=sz35)
 timr.grid(row = 0,column=1, padx=10, pady=10)
 Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
 

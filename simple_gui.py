@@ -41,7 +41,7 @@
 
 import time
 import PIL.Image
-from PIL import ImageTk
+from PIL import Image, ImageTk
 from tkinter import *
 import tkinter.font as tkFont
 from threading import Thread
@@ -60,15 +60,40 @@ def updatetime():
         t = t-1
         my_var.set(str(t))
         time.sleep(1)
+
+def on_resize(event):
+    ph = PIL.Image.open('background.webp') # load the background image
+    #l = Label(root)
+    imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
+    bgimg = ImageTk.PhotoImage(imgb)
+    l = Label(root, image=bgimg)
+    l.config(image=bgimg)
+    print("///////////////////////////////////\n")
+    print("The width of Tkinter window:", root.winfo_width())
+    print("\nThe height of Tkinter window:", root.winfo_height())
+    print("\n///////////////////////////////////\n")
+
+
 root = Tk()  # create root window
 my_var = StringVar()
+show_prmpt = StringVar()
 sz28 = tkFont.Font(size=28)
 sz35 = tkFont.Font(size=35)
-
-root.title("Basic GUI Layout")  # title of the GUI window
+root.title("Guess the Prompt")  # title of the GUI window
 root.maxsize(1300, 1300)  # specify the max size the window can expand to
-root.config(bg="#b7e2f3")  # specify background color
 
+
+ph = PIL.Image.open('background.webp') # load the background image
+#l = Label(root)
+imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
+bgimg = ImageTk.PhotoImage(imgb)
+l = Label(root, image=bgimg)
+l.config(image=bgimg)
+l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
+
+
+root.bind('<Return>',addtohistory)
 # Create left,right and top frames
 top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100)
 top_frame.grid(row=0, column=0, padx=10, pady=10)
