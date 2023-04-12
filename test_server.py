@@ -40,7 +40,7 @@ try:
     options = Options()
     options.binary_location = r'C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe'
     options.accept_insecure_certs = True
-    # options.headless = True
+    options.headless = True
     driver = webdriver.Chrome( service = PATH,options = options)
     driver.get('https://freeimagegenerator.com/')
     print('opened website..waiting for sign in')

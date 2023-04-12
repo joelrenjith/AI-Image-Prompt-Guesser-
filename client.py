@@ -9,7 +9,7 @@ import tkinter.font as tkFont
 import time
 import threading
 I_C=-1
-SERVER_IP   = '127.0.0.1'
+SERVER_IP   = '192.168.35.197'
 PORT_NUMBER = 5000
 SIZE = 1024
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
@@ -52,7 +52,7 @@ def addtohistory():
     inp.delete(0, END)
 
 def updatetime():
-    t = 60
+    t = 90
     global my_var
     my_var.set(str(t))
    
@@ -66,6 +66,7 @@ def updatetime():
     # correct = correct.decode()
 
     messagebox.showinfo('TIMES UP!','Answer = '+correct.decode()) 
+    root.destroy()
 
 root = Tk()  # create root window
 my_var = StringVar()
