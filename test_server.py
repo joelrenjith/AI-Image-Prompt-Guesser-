@@ -1,37 +1,23 @@
-from socket import socket, gethostbyname, AF_INET, SOCK_DGRAM
-import sys, threading
-PORT_NUMBER = 5656
+from socket import socket, AF_INET, SOCK_DGRAM
+import threading
+
+PORT_NUMBER = 5000
 SIZE = 1024
-connected = []
-try:
-    def multi_threaded_client(connection,username):
-        print(connection)
-        mySocket.sendto(('okay your user name is ='+username).encode(),(connection))
-        
 
-        print('recieved username',username)
-        
-    ThreadCount = 0
-    hostName = gethostbyname( '0.0.0.0' )
-    mySocket = socket( AF_INET, SOCK_DGRAM )
-    mySocket.bind( (hostName, PORT_NUMBER) )
+def multi_threaded_client(connection):
+    mySocket.sendto(('Enter username: ').encode(), connection)
+    username = mySocket.recvfrom(SIZE)[0].decode()
+    usernames.append(username)
+    mySocket.sendto(('Your username is: ' + username).encode(), connection)
 
+hostName = '0.0.0.0'
+mySocket = socket(AF_INET, SOCK_DGRAM)
+mySocket.bind((hostName, PORT_NUMBER))
 
+usernames = []
 
-       
-    print ("Test server listening on port {0}\n".format(PORT_NUMBER))
-    s = "bye"
-    while True:
-        Client, address = mySocket.recvfrom(1024)
-        if address not in connected:
-            connected.append(address)
-            print(Client.decode())
-            print('Connected to: ' + address[0] + ':' + str(address[1]))
-            
-            threading.Thread(target = multi_threaded_client,args= (address,Client.decode(),)).start()
-            
-            ThreadCount += 1
-            print('Thread Number: ' + str(ThreadCount))
+print("Server listening on port {0}\n".format(PORT_NUMBER))
 
-except Exception as e:
-    print(e)
+while True:
+    data, address = mySocket.recvfrom(SIZE)
+    threading.Thread(target=multi_threaded_client, args=(address,)).start()
