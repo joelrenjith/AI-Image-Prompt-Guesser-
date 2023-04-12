@@ -7,7 +7,9 @@ try:
     def multi_threaded_client(connection):
         print(connection)
         mySocket.sendto(('enter username').encode(),(connection))
-        username  = mySocket.recv(1024).decode()
+        username,connection  = mySocket.recvfrom(1024)
+        username = username.decode()
+        print('recieved username')
         mySocket.sendto(('okay your user name is ='+username).encode(),(connection))
     ThreadCount = 0
     hostName = gethostbyname( '0.0.0.0' )

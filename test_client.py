@@ -1,21 +1,24 @@
 import sys
 from socket import socket, AF_INET, SOCK_DGRAM
-SERVER_IP   = '192.168.11.197'
+SERVER_IP   = '192.168.11.206'
 PORT_NUMBER = 5000
 SIZE = 1024
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
-mySocket = socket( AF_INET, SOCK_DGRAM )
-myMessage = "Hello!"
-myMessage1 = ""
-i = 0
-while i < 10:
-    mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-    i = i + 1
+try:
+    mySocket = socket( AF_INET, SOCK_DGRAM )
+    myMessage = "Hello!"
+    myMessage1 = ""
+    i = 0
+    while i < 10:
+        mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+        i = i + 1
 
-mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-print(mySocket.recv(1024).decode())
-user = input()
-mySocket.sendto(user.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-ans  = mySocket.recv(1024)
-print(ans.decode())
-
+    mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+    print(mySocket.recv(1024).decode())
+    user = 'joel'
+    mySocket.sendto(user.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+    print('sent username')
+    ans  = mySocket.recv(1024)
+    print(ans.decode())
+except Exception as e:
+    print(e)
