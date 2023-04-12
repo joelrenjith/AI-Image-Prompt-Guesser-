@@ -45,6 +45,7 @@ def addtohistory():
         correct,addr = mySocket.recvfrom(1024)
         messagebox.showinfo('Game over','Answer = '+correct.decode())
         root.destroy
+        quit()
     board ,addr = mySocket.recvfrom(1024)
     print("new =",board.decode())
     show_prmpt.set(board.decode())
@@ -67,6 +68,7 @@ def updatetime():
 
     messagebox.showinfo('TIMES UP!','Answer = '+correct.decode()) 
     root.destroy()
+    quit()
 
 root = Tk()  # create root window
 my_var = StringVar()
