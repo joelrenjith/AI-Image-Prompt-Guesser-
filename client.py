@@ -75,9 +75,26 @@ my_var = StringVar()
 show_prmpt = StringVar()
 fontObj = tkFont.Font(size=28)
 fontObj1 = tkFont.Font(size=35)
-root.title("Basic GUI Layout")  # title of the GUI window
+root.title("Guess the Prompt")  # title of the GUI window
 root.maxsize(1300, 1300)  # specify the max size the window can expand to
+
+'''
+///////////////////////////////////
 root.config(bg="#b7e2f3")  # specify background color
+//////////////////////////////////
+'''
+
+bg = PhotoImage(file = "background.png")
+  
+# Create Canvas
+canvas1 = Canvas( root)
+  
+canvas1.pack(fill = "both", expand = True)
+  
+# Display image
+canvas1.create_image( 0, 0, image = bg, 
+                     anchor = "nw")
+
 root.bind('<Return>',addtohistory)
 # Create left,right and top frames
 top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
