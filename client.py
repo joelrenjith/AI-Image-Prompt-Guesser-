@@ -31,7 +31,7 @@ ans,addr=mySocket.recvfrom(1024)
 print(ans.decode())
 print(1)
 
-def addtohistory():
+def addtohistory(e):
     global I_C
     I_C=I_C +1
     mySocket.sendto(inp.get().encode('utf-8'),(SERVER_IP,PORT_NUMBER))
@@ -78,7 +78,7 @@ fontObj1 = tkFont.Font(size=35)
 root.title("Basic GUI Layout")  # title of the GUI window
 root.maxsize(1300, 1300)  # specify the max size the window can expand to
 root.config(bg="#b7e2f3")  # specify background color
-
+root.bind('<Return>',addtohistory)
 # Create left,right and top frames
 top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
 top_frame.grid(row=0, column=0, padx=10, pady=10)
