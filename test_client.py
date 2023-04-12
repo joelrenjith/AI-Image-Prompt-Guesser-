@@ -17,5 +17,5 @@ print(mySocket.recv(1024).decode())
 user = input()
 mySocket.sendto(user.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
 ans  = mySocket.recv(1024)
-print(ans)
+print(ans.decode())
 
