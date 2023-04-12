@@ -12,6 +12,7 @@ I_C=-1
 SERVER_IP   = '192.168.35.197'
 PORT_NUMBER = 5000
 SIZE = 1024
+bit = 0
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
 
 mySocket = socket( AF_INET, SOCK_DGRAM )
@@ -41,6 +42,8 @@ def addtohistory(e):
     listbox.insert(END, msg)
     # print(msg ,"\n", inp.get())
     if msg!=inp.get():
+        global bit
+        bit = 1
         listbox.itemconfig(I_C,{'fg':'Green'})
         correct,addr = mySocket.recvfrom(1024)
         messagebox.showinfo('Game over','Answer = '+correct.decode())
@@ -53,11 +56,14 @@ def addtohistory(e):
     inp.delete(0, END)
 
 def updatetime():
+    global bit
     t = 90
     global my_var
     my_var.set(str(t))
    
     while(t!=0):
+        if bit ==1:
+            return
         root.update()
         t = t-1
         my_var.set(str(t))
