@@ -10,9 +10,9 @@ try:
     # myMessage = "Hello!"
     myMessage1 = ""
     i = 0
-    # while i < 10:
-    #     mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-    #     i = i + 1
+    while i < 10:
+        mySocket.sendto(username.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+        i = i + 1
 
     mySocket.sendto(username.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
     ans  = mySocket.recv(1024)
