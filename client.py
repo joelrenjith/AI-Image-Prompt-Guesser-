@@ -9,7 +9,8 @@ import tkinter.font as tkFont
 import time
 import threading
 I_C=-1
-SERVER_IP   = '192.168.35.197'
+#SERVER_IP   = '192.168.35.197'
+SERVER_IP   = '127.0.0.1'
 PORT_NUMBER = 5000
 SIZE = 1024
 bit = 0
@@ -17,13 +18,16 @@ print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP,
 
 mySocket = socket( AF_INET, SOCK_DGRAM )
 myMessage = "Hello!"
-myMessage1 = ""
-i = 0
-while i < 10:
-    mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-    i = i + 1
+#myMessage1 = ""
+#i = 0
+# while i < 10:
+#     mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+#     i = i + 1
 
-mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+#mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+data,addr = mySocket.recvfrom(1024)
+print(data.decode())
 data,addr = mySocket.recvfrom(1024)
 img_link = data.decode()
 r = requests.get(img_link,allow_redirects=True)
@@ -32,16 +36,18 @@ ans,addr=mySocket.recvfrom(1024)
 print(ans.decode())
 print(1)
 
-def addtohistory(e):
+
+def submit():
     global I_C
     I_C=I_C +1
-    mySocket.sendto(inp.get().encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+    submitted=inp.get()
+    mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
     # bit,addr=mySocket.recvfrom(1024)
     msg,addr=mySocket.recvfrom(1024)
     msg = msg.decode()
     listbox.insert(END, msg)
     # print(msg ,"\n", inp.get())
-    if msg!=inp.get():
+    if msg!=submitted:
         global bit
         bit = 1
         listbox.itemconfig(I_C,{'fg':'Green'})
@@ -54,6 +60,9 @@ def addtohistory(e):
     show_prmpt.set(board.decode())
     root.update()
     inp.delete(0, END)
+
+def dummyfunc(e):
+    submit()
 
 def updatetime():
     global bit
@@ -107,7 +116,7 @@ l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l i
   # specify background color
 
 
-root.bind('<Return>',addtohistory)
+root.bind('<Return>',dummyfunc)
 # Create left,right and top frames
 top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
 top_frame.grid(row=0, column=0, padx=10, pady=10)
@@ -143,7 +152,7 @@ inpframe.grid(row=1, column=0, padx=1, pady=1)
 inp = Entry(inpframe, width=50)
 inp.grid(row=1, column=0, padx=1, pady=1)
 
-send = Button(inpframe, text="Submit", bg='#E2E5DE', command=addtohistory)
+send = Button(inpframe, text="Submit", bg='#E2E5DE', command=submit)
 send.grid(row=1, column=1, padx=1, pady=1)
 
 

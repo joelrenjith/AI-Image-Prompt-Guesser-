@@ -19,7 +19,7 @@ mySocket.bind( (hostName, PORT_NUMBER) )
 
 
 print ("Test server listening on port {0}\n".format(PORT_NUMBER))
-s = "bye"
+s = "Hello Client"
 def convert(copy):
     disp_ans =''
     for i in copy:
@@ -28,8 +28,10 @@ def convert(copy):
         disp_ans+=i+' '
     return disp_ans
 
-(data,addr) = mySocket.recvfrom(SIZE)
+data,addr = mySocket.recvfrom(SIZE)
+print(data.decode())
 print(addr)
+mySocket.sendto(s.encode(),addr)
 try:
     dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN'}
     ch = random.choice(list(dic))
@@ -43,7 +45,7 @@ try:
     options.headless = True
     driver = webdriver.Chrome( service = PATH,options = options)
     driver.get('https://freeimagegenerator.com/')
-    print('opened website..waiting for sign in')
+    print('opened website --> waiting for sign in')
     sign = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/nav/div[3]/div/div[2]/ul/li/a"))).click()
     art = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/a[1]"))).click()
     user = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/form/div/div[1]/input"))).send_keys(ch)
@@ -51,7 +53,7 @@ try:
     pswrd.send_keys(dic[ch])
     login  =driver.find_element(By.XPATH,"/html/body/div[2]/div/form/div/div[3]/a")
     login.click()
-    print('sign in done')
+    print('Sign-in done')
     head = WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH,"/html/body/header/div/div/div[1]/a[1]"))).click()
     prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
     l = list(df_new.sample(n=2))
@@ -61,9 +63,9 @@ try:
     copy = ''
     prompt.send_keys(s)
     prompt.send_keys(Keys.ENTER)
-    print('enterred prompt')
+    print('Enterred prompt')
     img = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[6]/button[1]"))).click()
-    print('got results...waiting for image')
+    print('got results --> waiting for image')
     element = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[2]/div[6]/a/img")))
     src  = driver.find_element(By.XPATH,"/html/body/div[2]/div/div[2]/div[6]/a/img").get_attribute("src")
 
@@ -83,7 +85,7 @@ try:
         
     print(convert(copy))
     mySocket.sendto(convert(copy).encode('utf-8'),(addr))
-    print('sent strig')
+    print('Sent Prompt String')
     # with open('filename.png', 'wb') as file:
     #     file.write(driver.find_element(By.XPATH,'/html/body/div[2]/div/div[2]/div[4]/a/img').screenshot_as_png)
     head =WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH,"/html/body/header/div/div/div[1]/a[1]"))).click()
