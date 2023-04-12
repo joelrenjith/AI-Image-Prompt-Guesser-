@@ -2,6 +2,7 @@ from socket import socket, gethostbyname, AF_INET, SOCK_DGRAM
 import sys, threading
 PORT_NUMBER = 5000
 SIZE = 1024
+connected = []
 try:
     def multi_threaded_client(connection):
         print(connection)
@@ -20,12 +21,14 @@ try:
     s = "bye"
     while True:
         Client, address = mySocket.recvfrom(1024)
-        print('Connected to: ' + address[0] + ':' + str(address[1]))
-        
-        threading.Thread(target = multi_threaded_client,args= (address,)).start()
-        
-        ThreadCount += 1
-        print('Thread Number: ' + str(ThreadCount))
+        if address not in connected:
+            connected.append(address)
+            print('Connected to: ' + address[0] + ':' + str(address[1]))
+            
+            threading.Thread(target = multi_threaded_client,args= (address,)).start()
+            
+            ThreadCount += 1
+            print('Thread Number: ' + str(ThreadCount))
 
 except Exception as e:
     print(e)
