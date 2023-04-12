@@ -29,9 +29,10 @@ def convert(copy):
     return disp_ans
 
 data,addr = mySocket.recvfrom(SIZE)
+mySocket.sendto('connected'.encode(),(addr))
 print(data.decode())
 print(addr)
-mySocket.sendto(s.encode(),addr)
+# mySocket.sendto(s.encode(),addr)
 try:
     dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN'}
     ch = random.choice(list(dic))
