@@ -34,7 +34,7 @@ print(data.decode())
 print(addr)
 # mySocket.sendto(s.encode(),addr)
 try:
-    dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN'}
+    dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN','diyx19@gmail.com':'JFLBAUEC'}
     ch = random.choice(list(dic))
     print(ch)
     df = pd.read_csv(r'Skribbl-words.csv')
