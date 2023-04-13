@@ -52,7 +52,7 @@ def submit():
         bit = 1
         listbox.itemconfig(I_C,{'fg':'Green'})
         correct,addr = mySocket.recvfrom(1024)
-        messagebox.showinfo('Game over','Answer = '+correct.decode(),font=("Monospace", 25))
+        messagebox.showinfo('Game over','Answer = '+correct.decode())
         root.destroy()
         quit()
     board ,addr = mySocket.recvfrom(1024)
