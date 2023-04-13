@@ -9,8 +9,8 @@ import tkinter.font as tkFont
 import time
 import threading
 I_C=-1
-#SERVER_IP   = '192.168.35.197'
-SERVER_IP   = '127.0.0.1'
+SERVER_IP   = '192.168.11.197'
+#SERVER_IP   = '127.0.0.1'
 PORT_NUMBER = 5000
 SIZE = 1024
 bit = 0
@@ -52,7 +52,7 @@ def submit():
         bit = 1
         listbox.itemconfig(I_C,{'fg':'Green'})
         correct,addr = mySocket.recvfrom(1024)
-        messagebox.showinfo('Game over','Answer = '+correct.decode())
+        messagebox.showinfo('Game over','Answer = '+correct.decode(),font=("Monospace", 25))
         root.destroy()
         quit()
     board ,addr = mySocket.recvfrom(1024)
