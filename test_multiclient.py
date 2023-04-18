@@ -7,24 +7,32 @@ mySocket.bind( (hostName, PORT_NUMBER) )
 print ("Test server listening on port {0}\n".format(PORT_NUMBER))
 players = {}
 bit  = 0
-def lobby():
-    global players
-    while(1):
-        global bit
-        if bit ==1:
-            return
-        username,id = mySocket.recvfrom(SIZE)
-        if id not in players:
-            players[id] = username
+c = 0
 
-def ready():
-    c = 0
-    global players
-    while(c!=len(players)):
+def listen():
+    while(1):
         msg,id = mySocket.recvfrom(SIZE)
-        if id in players:
-            c = c+1
-    bit = 1
+        if bit ==0:
+            if msg!=1:
+                lobby(id,msg)
+            else:
+                ready(id)
+        
+
+
+
+
+def lobby(id,username):
+    global players
+    if id not in players:
+        players[id] = username
+
+def ready(id):
+    global players,c
+    if id in players:
+        c+=1
+        if c == len(players):
+            bit = 1
 
 
 
