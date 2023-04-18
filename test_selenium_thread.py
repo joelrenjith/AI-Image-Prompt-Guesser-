@@ -94,12 +94,13 @@ try:
         s=" ".join(l)
         return s
 
-    while(i<5):
+    while(i<3):
         s = generateString(df_new)
         if i>1:
             retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
             retry.click()
         prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
+        prompt.clear()
         prompt.send_keys(s)
         prompt.send_keys(Keys.ENTER)
         print('Enterred prompt')
@@ -114,7 +115,7 @@ try:
         df = pd.DataFrame(temp)
         df.to_csv('cn_project_1\words&imgs.csv',index=False)
         print(f'added image {i}')
-        i+=1
+        i = i+1
 
 except Exception as e:
     print(e)
