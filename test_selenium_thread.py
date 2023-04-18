@@ -90,7 +90,7 @@ try:
 
     while(i<5):
         s = generateString(df_new)
-        if i>0:
+        if i>1:
             retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
             retry.click()
         prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
