@@ -94,6 +94,7 @@ try:
             retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
             retry.click()
         prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
+        prompt.send_keys('')
         prompt.send_keys(s)
         prompt.send_keys(Keys.ENTER)
         img = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[6]/button[1]"))).click()
@@ -105,7 +106,7 @@ try:
         df = pd.DataFrame(temp)
         df.to_csv('cn_project_1\words&imgs.csv',index=False)
         print(f'added image {i}')
-        i+=1
+        i = i+1
 
 except Exception as e:
     print(e)
