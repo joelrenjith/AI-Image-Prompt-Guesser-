@@ -12,6 +12,7 @@ c = 0
 def listen():
     while(1):
         msg,id = mySocket.recvfrom(SIZE)
+        msg = msg.decode()
         if bit ==0:
             if msg!=1:
                 lobby(id,msg)
