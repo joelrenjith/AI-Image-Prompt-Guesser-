@@ -88,13 +88,13 @@ try:
         s=" ".join(l)
         return s
 
-    while(i<5):
+    while(i<3):
         s = generateString(df_new)
         if i>1:
             retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
             retry.click()
         prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
-        prompt.send_keys('')
+        prompt.clear()
         prompt.send_keys(s)
         prompt.send_keys(Keys.ENTER)
         img = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[6]/button[1]"))).click()
