@@ -113,9 +113,12 @@ try:
         entry = {'string':s,'link':src}
         temp.append(entry)
         df = pd.DataFrame(temp)
-        df.to_csv('cn_project_1\words&imgs.csv',index=False)
+        df.to_csv('words&imgs.csv',index=False)
         print(f'added image {i}')
         i = i+1
 
 except Exception as e:
     print(e)
+    input()
+    driver.quit()
+    quit()
