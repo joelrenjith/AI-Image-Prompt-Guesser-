@@ -62,28 +62,91 @@ def updatetime():
         time.sleep(1)
 
 def on_resize(event):
-    ph = PIL.Image.open('background.webp') # load the background image
+    ph = PIL.Image.open('background.png') # load the background image
     #l = Label(root)
     imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
     bgimg = ImageTk.PhotoImage(imgb)
     l = Label(root, image=bgimg)
     l.config(image=bgimg)
     print("///////////////////////////////////\n")
-    print("The width of Tkinter window:", root.winfo_width())
-    print("\nThe height of Tkinter window:", root.winfo_height())
+    print("The width of Root window:", root.winfo_width())
+    print("\nThe height of Root window:", root.winfo_height())
     print("\n///////////////////////////////////\n")
+    
+
+def on_resize_loading(event):
+    phl = PIL.Image.open('background.png') # load the background image
+    #l = Label(root)
+    imgbl = phl.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
+    bgimgl = ImageTk.PhotoImage(imgbl)
+    lo = Label(load, image=bgimgl)
+    lo.config(image=bgimgl)
+    print("///////////////////////////////////\n")
+    print("The width of laoding window:", load.winfo_width())
+    print("\nThe height of loading window:", load.winfo_height())
+    print("\n///////////////////////////////////\n")
+    
+def nextwindow():
+    load.destroy()
+
+load=Tk()
+sz28 = tkFont.Font(size=28)
+sz35 = tkFont.Font(size=35)
+load.title("Waiting Stage")
+load.geometry("848x666")
+
+phl = PIL.Image.open('background.png') # load the background image
+#l = Label(root)
+imgbl = phl.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
+bgimgl = ImageTk.PhotoImage(imgbl)
+lo = Label(load, image=bgimgl)
+lo.config(image=bgimgl)
+lo.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+lo.bind('<Configure>', on_resize_loading) # on_resize will be executed whenever label l is resized
+
+top_frame = Label(load, text="Guess the Prompt", width=30, height=1,font=sz35) 
+top_frame.grid(row=0, column=0, padx=15, pady=15)
+subframe= Frame(load, width = 40, height= 40)
+subframe.grid(row=1, column=0, padx=15, pady=15)
+
+players = Listbox(subframe, width=55, height=30)
+  
+# Adding Listbox to the left
+# side of root window
+players.pack(side=LEFT, fill = BOTH, expand=True)
+  
+# Creating a Scrollbar and 
+# attaching it to root window
+scrollbar = Scrollbar(subframe)
+  
+# Adding Scrollbar to the right
+# side of root window
+scrollbar.pack(side = RIGHT, fill = BOTH) 
+#scrollbar.grid(row=0, column=1, sticky=NS)
+
+
+players.config(yscrollcommand = scrollbar.set)
+  
+scrollbar.config(command = players.yview)
+
+
+ready=Button(load,text="Ready?",command=nextwindow,width=10)
+ready.grid(row=2, column=0,padx=15,pady=15)
+load.mainloop()
+
+time.sleep(2)
 
 
 root = Tk()  # create root window
-my_var = StringVar()
-show_prmpt = StringVar()
 sz28 = tkFont.Font(size=28)
 sz35 = tkFont.Font(size=35)
+my_var = StringVar()
+show_prmpt = StringVar()
 root.title("Guess the Prompt")  # title of the GUI window
 root.maxsize(1300, 1300)  # specify the max size the window can expand to
 
 
-ph = PIL.Image.open('background.webp') # load the background image
+ph = PIL.Image.open('background.png') # load the background image
 #l = Label(root)
 imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
 bgimg = ImageTk.PhotoImage(imgb)

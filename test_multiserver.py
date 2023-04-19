@@ -21,7 +21,12 @@ def listen():
             else:
                 ready(id)
         else: 
-            break
+            sendeveryone('__')
+
+def sendeveryone(msg):
+    global players
+    for id in players:
+        mySocket.sendto(msg.encode(),id)       
         
 
 
@@ -38,12 +43,11 @@ def lobby(id,username):
         for i in players:
             for k in players:
                 mySocket.sendto(players[k].encode(),i)
-        for j in players:
-            mySocket.sendto('__'.encode(),j)
+       
         
 
 def ready(id):
-    global players,c
+    global players,c,bit
     if id in players:
         c+=1
         if c == len(players):
