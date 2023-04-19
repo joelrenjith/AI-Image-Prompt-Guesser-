@@ -143,7 +143,7 @@ def on_resize_loading(event):
 def submituser():
     submitted=eyusn.get()
     mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-    listen()
+    threading.Thread(target=listen).start()
 
 def nextwindow():
     load.destroy()
