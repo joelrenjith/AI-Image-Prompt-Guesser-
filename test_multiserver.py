@@ -47,6 +47,7 @@ def lobby(id,username):
         
         print(id,':',username)
         sendeveryone(username)
+        print('sent lobby')
         
        
         

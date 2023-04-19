@@ -43,7 +43,7 @@ def listen():
         if(msg.isdigit()):
             num=int(msg)
             for i in range(0,num):
-                players.insert(mySocket.recv(SIZE).decode())
+                players.insert(END,mySocket.recv(SIZE).decode())
         else:
             if(msg=='ready'):
                 ind=int(mySocket.recv(SIZE).decode())
@@ -61,7 +61,8 @@ def listen():
                     t=t-1
                 nextwindow()
             else:
-                players.insert(msg)
+                print('recieved name')
+                players.insert(END,msg)
         
 
 def load_dummyfunc(e):
