@@ -59,10 +59,10 @@ try:
     dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN','diyx19@gmail.com':'JFLBAUEC'}
     ch = random.choice(list(dic))
 
-    df = pd.read_csv('Skribbl-words.csv')
+    df = pd.read_csv('cn_project_1\Skribbl-words.csv')
     df_new = (df['word'])
 
-    #df = pd.read_csv(r'words&imgs.csv')
+    df = pd.read_csv('cn_project_1\words&imgs.csv')
 
     PATH = Service('C:\Program Files (x86)\chromedriver.exe')
     options = Options()
@@ -96,6 +96,7 @@ try:
 
     while(i<3):
         s = generateString(df_new)
+        print(s)
         if i>1:
             retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
             retry.click()
@@ -110,10 +111,12 @@ try:
         src  = driver.find_element(By.XPATH,"/html/body/div[2]/div/div[2]/div[4]/a/img").get_attribute("src")
         print(src+ "\n\n")
         #print(src+ "\n\n")
-        entry = {'string':s,'link':src}
-        temp.append(entry)
+        entry = {'string':[s],'link':[src]}
+        '''temp.append(entry)
         df = pd.DataFrame(temp)
-        df.to_csv('words&imgs.csv',index=False)
+        df.to_csv('words&imgs.csv',index=False)'''
+        entry = pd.DataFrame(entry)
+        df = pd.concat([df,entry],ignore_index=True)
         print(f'added image {i}')
         i = i+1
 
