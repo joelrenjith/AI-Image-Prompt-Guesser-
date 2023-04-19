@@ -11,9 +11,9 @@ user = input('enter username')
 mySocket.sendto(user.encode(),adr)
 
 def ready():
-    one  = input('enter 1 to get ready')
-    mySocket.sendto(one.encode(),adr)
-    return
+    # one  = input('enter 1 to get ready')
+    mySocket.sendto('1'.encode(),adr)
+    # return
 
 t1 = threading.Thread(target=ready())
 t1.start()
