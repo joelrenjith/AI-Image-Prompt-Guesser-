@@ -43,7 +43,9 @@ def listen():
         if(msg.isdigit()):
             num=int(msg)
             for i in range(0,num):
-                players.insert(END,mySocket.recv(SIZE).decode())
+                x = mySocket.recv(SIZE).decode()
+                print(x)
+                players.insert(END,x)
         else:
             if(msg=='ready'):
                 ind=int(mySocket.recv(SIZE).decode())
@@ -203,10 +205,10 @@ load.bind('<Return>',load_dummyfunc)
 eyusn.grid(row=0)
 Submit.grid(row=1,pady=5)
 
-subframe= Frame(load, width = 40, height= 40)
+subframe= Frame(load, width = 40, height= 5)
 subframe.grid(row=2, column=0, padx=15, pady=15)
 
-players = Listbox(subframe, width=55, height=30)
+players = Listbox(subframe, width=30, height=4)
   
 # Adding Listbox to the left
 # side of root window
