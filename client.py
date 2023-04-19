@@ -36,38 +36,37 @@ myMessage = "Hello!"
 # print(ans.decode())
 # print(1)
 
-try:
-    def listen():
-        while(1):
-            msg  = mySocket.recv(SIZE).decode()
-            if(msg.isdigit()):
-                num=int(msg)
-                for i in range(0,num):
-                    players.insert(END,mySocket.recv(SIZE).decode())
-            else:
-                if(msg=='ready'):
-                    ind=int(mySocket.recv(SIZE).decode())
-                    players.itemconfig(ind,{'fg':'Green'})
-                elif(msg=='__'):
-                    t=10
-                    temp= "Game starting in "
-                    tempend=" seconds"
-                    while(t!=0):
-                        if(t==1):
-                            tempend="second"
-                        heading.set(temp+str(t)+tempend)
-                        load.update()
-                        time.sleep(1)
-                        t=t-1
-                    nextwindow()
-                else:
-                    print('recieved name')
-                    addplayers(msg)
-    def addplayers(msg):
-        players.insert(END,msg)         
 
-    def load_dummyfunc(e):
-        submituser()
+def listen():
+    while(1):
+        msg  = mySocket.recv(SIZE).decode()
+        if(msg.isdigit()):
+            num=int(msg)
+            for i in range(0,num):
+                players.insert(END,mySocket.recv(SIZE).decode())
+        else:
+            if(msg=='ready'):
+                ind=int(mySocket.recv(SIZE).decode())
+                players.itemconfig(ind,{'fg':'Green'})
+            elif(msg=='__'):
+                t=10
+                temp= "Game starting in "
+                tempend=" seconds"
+                while(t!=0):
+                    if(t==1):
+                        tempend="second"
+                    heading.set(temp+str(t)+tempend)
+                    load.update()
+                    time.sleep(1)
+                    t=t-1
+                nextwindow()
+            else:
+                print('recieved name')
+                players.insert(END,msg)
+        
+
+def load_dummyfunc(e):
+    submituser()
 
     def submit():
         global I_C
@@ -189,34 +188,34 @@ try:
     top_frame = Label(load, textvariable=heading, width=30, height=1,font=sz35) 
     top_frame.grid(row=0, column=0, padx=15, pady=15)
 
-    inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
-    inp_frame.grid(row=1, column=0, padx=15, pady=15)
+inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
+inp_frame.grid(row=1, column=0, padx=15, pady=15)
 
-    eyusn=Entry(inp_frame, width=5)
-    Submit= Button(inp_frame,text="Submit", width=1, command=submituser)
+eyusn=Entry(inp_frame, width=5)
+Submit= Button(inp_frame,text="Submit", width=1, command=submituser)
 
     load.bind('<Return>',load_dummyfunc)
 
-    eyusn.grid(column=0)
-    Submit.grid(column=1)
+eyusn.grid(column=0)
+Submit.grid(column=1)
 
-    subframe= Frame(load, width = 40, height= 40)
-    subframe.grid(row=2, column=0, padx=15, pady=15)
+subframe= Frame(load, width = 40, height= 40)
+subframe.grid(row=2, column=0, padx=15, pady=15)
 
-    players = Listbox(subframe, width=55, height=30)
-    
-    # Adding Listbox to the left
-    # side of root window
-    players.pack(side=LEFT, fill = BOTH, expand=True)
-    
-    # Creating a Scrollbar and 
-    # attaching it to root window
-    # scrollbar = Scrollbar(subframe)
-    
-    # # Adding Scrollbar to the right
-    # # side of root window
-    # scrollbar.pack(side = RIGHT, fill = BOTH) 
-    # #scrollbar.grid(row=0, column=1, sticky=NS)
+players = Listbox(subframe, width=55, height=30)
+  
+# Adding Listbox to the left
+# side of root window
+players.pack(side=LEFT, fill = BOTH, expand=True)
+  
+# Creating a Scrollbar and 
+# attaching it to root window
+scrollbar = Scrollbar(subframe)
+  
+# Adding Scrollbar to the right
+# side of root window
+scrollbar.pack(side = RIGHT, fill = BOTH) 
+#scrollbar.grid(row=0, column=1, sticky=NS)
 
 
     # players.config(yscrollcommand = scrollbar.set)
