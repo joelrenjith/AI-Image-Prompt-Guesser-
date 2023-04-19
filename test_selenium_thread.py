@@ -72,7 +72,7 @@ try:
     options.accept_insecure_certs = True
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--allow-running-insecure-content')
-    #options.headless = True
+    options.headless = True
     driver = webdriver.Chrome( service = PATH,options = options)
     driver.get('https://freeimagegenerator.com/')
     print('opened website --> waiting for sign in')
