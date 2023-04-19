@@ -37,6 +37,36 @@ print(ans.decode())
 print(1)
 
 
+def listen():
+    while(1):
+        msg  = mySocket.recv(SIZE).decode()
+        if(msg.isdigit()):
+            num=int(msg)
+            for i in range(0,num):
+                players.insert(mySocket.recv(SIZE).decode())
+        else:
+            if(msg=='ready'):
+                ind=int(mySocket.recv(SIZE).decode())
+                players.itemconfig(ind,{'fg':'Green'})
+            elif(msg=='__'):
+                t=10
+                temp= "Game starting in "
+                tempend=" seconds"
+                while(t!=0):
+                    if(t==1):
+                        tempend="second"
+                    heading.set(temp+str(t)+tempend)
+                    load.update()
+                    time.sleep(1)
+                    t=t-1
+                nextwindow()
+            else:
+                players.insert(msg)
+        
+
+def load_dummyfunc(e):
+    submituser()
+
 def submit():
     global I_C
     I_C=I_C +1
@@ -109,9 +139,17 @@ def on_resize_loading(event):
     print("\nThe height of loading window:", load.winfo_height())
     print("\n///////////////////////////////////\n")
 
+def submituser():
+    submitted=eyusn.get()
+    mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+    listen()
+
 def nextwindow():
     load.destroy()
 
+
+
+##################################################################################
 
 '''
 
@@ -125,7 +163,7 @@ Ongoing work: Loading Screen for multiplayer
 
 
 
-
+'''
 
 
 load=Tk()
@@ -133,6 +171,7 @@ sz28 = tkFont.Font(size=28)
 sz35 = tkFont.Font(size=35)
 load.title("Waiting Stage")
 load.geometry("848x666")
+heading = StringVar()
 
 phl = PIL.Image.open('background.png') # load the background image
 #l = Label(root)
@@ -143,10 +182,24 @@ lo.config(image=bgimgl)
 lo.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
 lo.bind('<Configure>', on_resize_loading) # on_resize will be executed whenever label l is resized
 
-top_frame = Label(load, text="Guess the Prompt", width=30, height=1,font=sz35) 
+heading.set("Guess the Prompt")
+
+top_frame = Label(load, text=heading, width=30, height=1,font=sz35) 
 top_frame.grid(row=0, column=0, padx=15, pady=15)
+
+inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
+inp_frame.grid(row=1, column=0, padx=15, pady=15)
+
+eyusn=Entry(inp_frame, width=5)
+Submit= Button(inp_frame,text="Submit", width=1, command=submituser)
+
+load.bind('<Return>',load_dummyfunc)
+
+eyusn.grid(column=0)
+Submit.grid(column=1)
+
 subframe= Frame(load, width = 40, height= 40)
-subframe.grid(row=1, column=0, padx=15, pady=15)
+subframe.grid(row=2, column=0, padx=15, pady=15)
 
 players = Listbox(subframe, width=55, height=30)
   
@@ -170,11 +223,13 @@ scrollbar.config(command = players.yview)
 
 
 ready=Button(load,text="Ready?",command=nextwindow,width=10)
-ready.grid(row=2, column=0,padx=15,pady=15)
+ready.grid(row=3, column=0,padx=15,pady=15)
 load.mainloop()
 
 #time.sleep(2)
-'''
+
+
+##################################################################################
 
 
 root = Tk()  # create root window
