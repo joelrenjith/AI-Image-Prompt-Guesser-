@@ -60,7 +60,7 @@ try:
     dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN','diyx19@gmail.com':'JFLBAUEC'}
     ch = random.choice(list(dic))
 
-    df = pd.read_csv('cn_project_1\Skribbl-words.csv')
+    df = pd.read_csv('Skribbl-words.csv')
     df_new = (df['word'])
 
     #df = pd.read_csv('cn_project_1\words&imgs.csv')
@@ -72,7 +72,7 @@ try:
     options.accept_insecure_certs = True
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--allow-running-insecure-content')
-    options.headless = True
+    # options.headless = True
     driver = webdriver.Chrome( service = PATH,options = options)
     driver.get('https://freeimagegenerator.com/')
     print('opened website --> waiting for sign in')
@@ -114,7 +114,7 @@ try:
         print(src+ "\n\n")
         #print(src+ "\n\n")
         entry = {'string':s,'link':src}
-        with open('cn_project_1\words&imgs.csv','a',newline='') as f_object:
+        with open('words&imgs.csv','a',newline='') as f_object:
                 writerObject = DictWriter(f_object,fieldnames=titles)
                 writerObject.writerow(entry)
                 f_object.close()
