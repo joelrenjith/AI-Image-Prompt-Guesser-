@@ -7,7 +7,7 @@ hostName = gethostbyname( '0.0.0.0' )
 mySocket = socket( AF_INET, SOCK_DGRAM )
 mySocket.bind( (hostName, PORT_NUMBER) )
 print ("Test server listening on port {0}\n".format(PORT_NUMBER))
-players = {}
+players = {('127.0.0.1',5490):'joel'}
 bit  = 0
 c = 0
 
