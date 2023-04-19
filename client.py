@@ -39,7 +39,8 @@ myMessage = "Hello!"
 
 def listen():
     while(1):
-        msg  = mySocket.recv(SIZE).decode()
+        msg,addr  = mySocket.recvfrom(SIZE)
+        msg=msg.decode()
         if(msg.isdigit()):
             num=int(msg)
             for i in range(0,num):
@@ -61,7 +62,7 @@ def listen():
                     t=t-1
                 nextwindow()
             else:
-                print('recieved name')
+                print('recieved name',msg,type(msg))
                 players.insert(END,msg)
         
 
@@ -188,21 +189,21 @@ heading.set("Guess the Prompt")
 top_frame = Label(load, textvariable=heading, width=30, height=1,font=sz35) 
 top_frame.grid(row=0, column=0, padx=15, pady=15)
 
-inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
+inp_frame = LabelFrame(load, text="Enter Your Username", width=30, height=1)
 inp_frame.grid(row=1, column=0, padx=15, pady=15)
 
-eyusn=Entry(inp_frame, width=5)
-Submit= Button(inp_frame,text="Submit", width=1, command=submituser)
+eyusn=Entry(inp_frame, width=20)
+Submit= Button(inp_frame,text="Submit", command=submituser,width=20)
 
 load.bind('<Return>',load_dummyfunc)
 
-eyusn.grid(column=0)
-Submit.grid(column=1)
+eyusn.grid(row=0)
+Submit.grid(row=1)
 
-subframe= Frame(load, width = 40, height= 40)
+subframe= Frame(load, width = 50, height= 10)
 subframe.grid(row=2, column=0, padx=15, pady=15)
 
-players = Listbox(subframe, width=55, height=30)
+players = Listbox(subframe)
   
 # Adding Listbox to the left
 # side of root window
