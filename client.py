@@ -59,7 +59,7 @@ def listen():
                     load.update()
                     time.sleep(1)
                     t=t-1
-                nextwindow()
+                return
             else:
                 print('recieved name')
                 players.insert(END,msg)
@@ -143,7 +143,11 @@ def on_resize_loading(event):
 def submituser():
     submitted=eyusn.get()
     mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-    threading.Thread(target=listen).start()
+    t1 = threading.Thread(target=listen)
+    t1.start()
+    t1.join()
+    nextwindow()
+
 
 def nextwindow():
     load.destroy()
