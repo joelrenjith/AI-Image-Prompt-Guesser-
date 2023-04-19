@@ -68,85 +68,85 @@ def listen():
 def load_dummyfunc(e):
     submituser()
 
-    def submit():
-        global I_C
-        I_C=I_C +1
-        submitted=inp.get()
-        mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-        # bit,addr=mySocket.recvfrom(1024)
-        msg,addr=mySocket.recvfrom(1024)
-        msg = msg.decode()
-        listbox.insert(END, msg)
-        # print(msg ,"\n", inp.get())
-        if msg!=submitted:
-            global bit
-            bit = 1
-            listbox.itemconfig(I_C,{'fg':'Green'})
-            correct,addr = mySocket.recvfrom(1024)
-            messagebox.showinfo('Game over','Answer = '+correct.decode())
-            root.destroy()
-            quit()
-        board ,addr = mySocket.recvfrom(1024)
-        print("new =",board.decode())
-        show_prmpt.set(board.decode())
-        root.update()
-        inp.delete(0, END)
-
-    def dummyfunc(e):
-        submit()
-
-    def updatetime():
+def submit():
+    global I_C
+    I_C=I_C +1
+    submitted=inp.get()
+    mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+    # bit,addr=mySocket.recvfrom(1024)
+    msg,addr=mySocket.recvfrom(1024)
+    msg = msg.decode()
+    listbox.insert(END, msg)
+    # print(msg ,"\n", inp.get())
+    if msg!=submitted:
         global bit
-        t = 90
-        global my_var
-        my_var.set(str(t))
-    
-        while(t!=0):
-            if bit ==1:
-                return
-            root.update()
-            t = t-1
-            my_var.set(str(t))
-            time.sleep(1)
-        mySocket.sendto(('__').encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+        bit = 1
+        listbox.itemconfig(I_C,{'fg':'Green'})
         correct,addr = mySocket.recvfrom(1024)
-        # correct = correct.decode()
-
-        messagebox.showinfo('TIMES UP!','Answer = '+correct.decode()) 
+        messagebox.showinfo('Game over','Answer = '+correct.decode())
         root.destroy()
-        quit() 
+        quit()
+    board ,addr = mySocket.recvfrom(1024)
+    print("new =",board.decode())
+    show_prmpt.set(board.decode())
+    root.update()
+    inp.delete(0, END)
 
-    def on_resize(e):
-        ph = PIL.Image.open('background.png') # load the background image
-        #l = Label(root)
-        imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
-        bgimg = ImageTk.PhotoImage(imgb)
-        l = Label(root, image=bgimg)
-        l.config(image=bgimg)
-        print("///////////////////////////////////\n")
-        print("The width of Root window:", root.winfo_width())
-        print("\nThe height of Root window:", root.winfo_height())
-        print("\n///////////////////////////////////\n")
+def dummyfunc(e):
+    submit()
 
-    def on_resize_loading(event):
-        phl = PIL.Image.open('background.png') # load the background image
-        #l = Label(root)
-        imgbl = phl.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
-        bgimgl = ImageTk.PhotoImage(imgbl)
-        lo = Label(load, image=bgimgl)
-        lo.config(image=bgimgl)
-        print("///////////////////////////////////\n")
-        print("The width of loading window:", load.winfo_width())
-        print("\nThe height of loading window:", load.winfo_height())
-        print("\n///////////////////////////////////\n")
+def updatetime():
+    global bit
+    t = 90
+    global my_var
+    my_var.set(str(t))
 
-    def submituser():
-        submitted=eyusn.get()
-        mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-        listen()
+    while(t!=0):
+        if bit ==1:
+            return
+        root.update()
+        t = t-1
+        my_var.set(str(t))
+        time.sleep(1)
+    mySocket.sendto(('__').encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+    correct,addr = mySocket.recvfrom(1024)
+    # correct = correct.decode()
 
-    def nextwindow():
-        load.destroy()
+    messagebox.showinfo('TIMES UP!','Answer = '+correct.decode()) 
+    root.destroy()
+    quit() 
+
+def on_resize(e):
+    ph = PIL.Image.open('background.png') # load the background image
+    #l = Label(root)
+    imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
+    bgimg = ImageTk.PhotoImage(imgb)
+    l = Label(root, image=bgimg)
+    l.config(image=bgimg)
+    print("///////////////////////////////////\n")
+    print("The width of Root window:", root.winfo_width())
+    print("\nThe height of Root window:", root.winfo_height())
+    print("\n///////////////////////////////////\n")
+
+def on_resize_loading(event):
+    phl = PIL.Image.open('background.png') # load the background image
+    #l = Label(root)
+    imgbl = phl.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
+    bgimgl = ImageTk.PhotoImage(imgbl)
+    lo = Label(load, image=bgimgl)
+    lo.config(image=bgimgl)
+    print("///////////////////////////////////\n")
+    print("The width of loading window:", load.winfo_width())
+    print("\nThe height of loading window:", load.winfo_height())
+    print("\n///////////////////////////////////\n")
+
+def submituser():
+    submitted=eyusn.get()
+    mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+    listen()
+
+def nextwindow():
+    load.destroy()
 
 
 
@@ -167,26 +167,26 @@ def load_dummyfunc(e):
     '''
 
 
-    load=Tk()
-    sz28 = tkFont.Font(size=28)
-    sz35 = tkFont.Font(size=35)
-    load.title("Waiting Stage")
-    load.geometry("848x666")
-    heading = StringVar()
+load=Tk()
+sz28 = tkFont.Font(size=28)
+sz35 = tkFont.Font(size=35)
+load.title("Waiting Stage")
+load.geometry("848x666")
+heading = StringVar()
 
-    phl = PIL.Image.open('background.png') # load the background image
-    #l = Label(root)
-    imgbl = phl.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
-    bgimgl = ImageTk.PhotoImage(imgbl)
-    lo = Label(load, image=bgimgl)
-    lo.config(image=bgimgl)
-    lo.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
-    lo.bind('<Configure>', on_resize_loading) # on_resize will be executed whenever label l is resized
+phl = PIL.Image.open('background.png') # load the background image
+#l = Label(root)
+imgbl = phl.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
+bgimgl = ImageTk.PhotoImage(imgbl)
+lo = Label(load, image=bgimgl)
+lo.config(image=bgimgl)
+lo.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+lo.bind('<Configure>', on_resize_loading) # on_resize will be executed whenever label l is resized
 
-    heading.set("Guess the Prompt")
+heading.set("Guess the Prompt")
 
-    top_frame = Label(load, textvariable=heading, width=30, height=1,font=sz35) 
-    top_frame.grid(row=0, column=0, padx=15, pady=15)
+top_frame = Label(load, textvariable=heading, width=30, height=1,font=sz35) 
+top_frame.grid(row=0, column=0, padx=15, pady=15)
 
 inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
 inp_frame.grid(row=1, column=0, padx=15, pady=15)
@@ -194,7 +194,7 @@ inp_frame.grid(row=1, column=0, padx=15, pady=15)
 eyusn=Entry(inp_frame, width=5)
 Submit= Button(inp_frame,text="Submit", width=1, command=submituser)
 
-    load.bind('<Return>',load_dummyfunc)
+load.bind('<Return>',load_dummyfunc)
 
 eyusn.grid(column=0)
 Submit.grid(column=1)
@@ -223,9 +223,9 @@ scrollbar.pack(side = RIGHT, fill = BOTH)
     # scrollbar.config(command = players.yview)
 
 
-    ready=Button(load,text="Ready?",command=nextwindow,width=10)
-    ready.grid(row=3, column=0,padx=15,pady=15)
-    load.mainloop()
+ready=Button(load,text="Ready?",command=nextwindow,width=10)
+ready.grid(row=3, column=0,padx=15,pady=15)
+load.mainloop()
 
     #time.sleep(2)
 
@@ -317,5 +317,3 @@ scrollbar.pack(side = RIGHT, fill = BOTH)
     # t1 = threading.Thread(target=updatetime)
     # t1.start()
     # root.mainloop()
-except Exception as e:
-    print(e)
