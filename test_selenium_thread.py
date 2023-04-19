@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
+from csv import DictWriter
 # dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN','diyx19@gmail.com':'JFLBAUEC'}
 # ch = random.choice(list(dic))
 # print(ch)
@@ -62,7 +63,8 @@ try:
     df = pd.read_csv('cn_project_1\Skribbl-words.csv')
     df_new = (df['word'])
 
-    df = pd.read_csv('cn_project_1\words&imgs.csv')
+    #df = pd.read_csv('cn_project_1\words&imgs.csv')
+    titles = ['string','link']
 
     PATH = Service('C:\Program Files (x86)\chromedriver.exe')
     options = Options()
@@ -70,7 +72,7 @@ try:
     options.accept_insecure_certs = True
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--allow-running-insecure-content')
-    #options.headless = True
+    options.headless = True
     driver = webdriver.Chrome( service = PATH,options = options)
     driver.get('https://freeimagegenerator.com/')
     print('opened website --> waiting for sign in')
@@ -87,7 +89,7 @@ try:
     head = WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH,"/html/body/header/div/div/div[1]/a[1]"))).click()
 
     i = 1
-    temp =[]
+    
 
     def generateString(x):
         l = list(x.sample(n=2))
@@ -111,12 +113,11 @@ try:
         src  = driver.find_element(By.XPATH,"/html/body/div[2]/div/div[2]/div[4]/a/img").get_attribute("src")
         print(src+ "\n\n")
         #print(src+ "\n\n")
-        entry = {'string':[s],'link':[src]}
-        '''temp.append(entry)
-        df = pd.DataFrame(temp)
-        df.to_csv('words&imgs.csv',index=False)'''
-        entry = pd.DataFrame(entry)
-        df = pd.concat([df,entry],ignore_index=True)
+        entry = {'string':s,'link':src}
+        with open('words&imgs.csv','a',newline='') as f_object:
+                writerObject = DictWriter(f_object,fieldnames=titles)
+                writerObject.writerow(entry)
+                f_object.close()
         print(f'added image {i}')
         i = i+1
 
