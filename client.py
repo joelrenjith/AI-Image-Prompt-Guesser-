@@ -24,18 +24,51 @@ myMessage = "Hello!"
 #     mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
 #     i = i + 1
 
-mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-#mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-data,addr = mySocket.recvfrom(1024)
-print(data.decode())
-data,addr = mySocket.recvfrom(1024)
-img_link = data.decode()
-r = requests.get(img_link,allow_redirects=True)
-open('img.jpg','wb').write(r.content)
-ans,addr=mySocket.recvfrom(1024)
-print(ans.decode())
-print(1)
+# mySocket.sendto(myMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+# #mySocket.sendto(myMessage1.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+# data,addr = mySocket.recvfrom(1024)
+# print(data.decode())
+# data,addr = mySocket.recvfrom(1024)
+# img_link = data.decode()
+# r = requests.get(img_link,allow_redirects=True)
+# open('img.jpg','wb').write(r.content)
+# ans,addr=mySocket.recvfrom(1024)
+# print(ans.decode())
+# print(1)
 
+
+def listen():
+    while(1):
+        msg  = mySocket.recv(SIZE).decode()
+        if(msg.isdigit()):
+            num=int(msg)
+            for i in range(0,num):
+                x = mySocket.recv(SIZE).decode()
+                print(x)
+                players.insert(END,x)
+        else:
+            if(msg=='ready'):
+                ind=int(mySocket.recv(SIZE).decode())
+                players.itemconfig(ind,{'fg':'Green'})
+            elif(msg=='__'):
+                t=10
+                temp= "Game starting in "
+                tempend=" seconds"
+                while(t!=0):
+                    if(t==1):
+                        tempend="second"
+                    heading.set(temp+str(t)+tempend)
+                    load.update()
+                    time.sleep(1)
+                    t=t-1
+                return
+            else:
+                print('recieved name')
+                players.insert(END,msg)
+        
+
+def load_dummyfunc(e):
+    submituser()
 
 def submit():
     global I_C
@@ -69,7 +102,7 @@ def updatetime():
     t = 90
     global my_var
     my_var.set(str(t))
-   
+
     while(t!=0):
         if bit ==1:
             return
@@ -109,23 +142,35 @@ def on_resize_loading(event):
     print("\nThe height of loading window:", load.winfo_height())
     print("\n///////////////////////////////////\n")
 
+def submituser():
+    submitted=eyusn.get()
+    mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+    t1 = threading.Thread(target=listen)
+    t1.start()
+    t1.join()
+    nextwindow()
+
+
 def nextwindow():
     load.destroy()
 
 
-'''
+
+    ##################################################################################
+
+    '''
 
 
 
 
 
 
-Ongoing work: Loading Screen for multiplayer
+    Ongoing work: Loading Screen for multiplayer
 
 
 
 
-
+    '''
 
 
 load=Tk()
@@ -133,6 +178,7 @@ sz28 = tkFont.Font(size=28)
 sz35 = tkFont.Font(size=35)
 load.title("Waiting Stage")
 load.geometry("848x666")
+heading = StringVar()
 
 phl = PIL.Image.open('background.png') # load the background image
 #l = Label(root)
@@ -143,12 +189,26 @@ lo.config(image=bgimgl)
 lo.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
 lo.bind('<Configure>', on_resize_loading) # on_resize will be executed whenever label l is resized
 
-top_frame = Label(load, text="Guess the Prompt", width=30, height=1,font=sz35) 
-top_frame.grid(row=0, column=0, padx=15, pady=15)
-subframe= Frame(load, width = 40, height= 40)
-subframe.grid(row=1, column=0, padx=15, pady=15)
+heading.set("Guess the Prompt")
 
-players = Listbox(subframe, width=55, height=30)
+top_frame = Label(load, textvariable=heading, width=30, height=1,font=sz35) 
+top_frame.grid(row=0, column=0, padx=15, pady=15)
+
+inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
+inp_frame.grid(row=1, column=0, padx=15, pady=15)
+
+eyusn=Entry(inp_frame, width=20)
+Submit= Button(inp_frame,text="Submit", width=15, command=submituser)
+
+load.bind('<Return>',load_dummyfunc)
+
+eyusn.grid(row=0)
+Submit.grid(row=1,pady=5)
+
+subframe= Frame(load, width = 40, height= 5)
+subframe.grid(row=2, column=0, padx=15, pady=15)
+
+players = Listbox(subframe, width=30, height=4)
   
 # Adding Listbox to the left
 # side of root window
@@ -165,99 +225,101 @@ scrollbar.pack(side = RIGHT, fill = BOTH)
 
 
 players.config(yscrollcommand = scrollbar.set)
-  
+
 scrollbar.config(command = players.yview)
 
 
 ready=Button(load,text="Ready?",command=nextwindow,width=10)
-ready.grid(row=2, column=0,padx=15,pady=15)
+ready.grid(row=3, column=0,padx=15,pady=15)
 load.mainloop()
 
-#time.sleep(2)
-'''
+    #time.sleep(2)
 
 
-root = Tk()  # create root window
-sz28 = tkFont.Font(size=28)
-sz35 = tkFont.Font(size=35)
-my_var = StringVar()
-show_prmpt = StringVar()
-root.title("Guess the Prompt")  # title of the GUI window
-root.maxsize(1300, 1300)  # specify the max size the window can expand to
-
-ph = PIL.Image.open('background.png') # load the background image
-#l = Label(root)
-imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
-bgimg = ImageTk.PhotoImage(imgb)
-l = Label(root, image=bgimg)
-l.config(image=bgimg)
-l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
-l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
-  # specify background color
+    ##################################################################################
 
 
-root.bind('<Return>',dummyfunc)
-# Create left,right and top frames
-top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
-top_frame.grid(row=0, column=0, padx=10, pady=10)
+# root = Tk()  # create root window
+# sz28 = tkFont.Font(size=28)
+# sz35 = tkFont.Font(size=35)
+# my_var = StringVar()
+# show_prmpt = StringVar()
+# root.title("Guess the Prompt")  # title of the GUI window
+# root.maxsize(1300, 1300)  # specify the max size the window can expand to
 
-subframe= Frame(root, width = 700, height= 400)
-subframe.grid(row=1, column=0, padx=10, pady=10)
-
-left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
-left_frame.grid(row=0, column=0, padx=2, pady=2)
-
-show_prmpt.set((ans.decode()))
-# load image to be "edited"
-image  = PIL.Image.open("img.jpg")
-resize_image = image.resize((450,500))
-img = ImageTk.PhotoImage(resize_image)
-print(ans.decode())
-# Display image in right_frame
-user_name = Label(top_frame,textvariable=show_prmpt, font=sz28).grid(row=0,column=0, padx=10, pady=10)
-
-timr = Label(top_frame,textvariable=my_var,fg='Red', font=sz35)
-timr.grid(row = 0,column=1, padx=10, pady=10)
-Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
-
-right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
-right_frame.grid(row=0, column=1, padx=2, pady=2)
-
-history = Frame(right_frame, width=350, height=400, bg='#E2E5DE')
-history.grid(row=0, column=0)
-
-inpframe = Frame(right_frame, width=200, height=400)
-inpframe.grid(row=1, column=0, padx=1, pady=1)
-
-inp = Entry(inpframe, width=50)
-inp.grid(row=1, column=0, padx=1, pady=1)
-
-send = Button(inpframe, text="Submit", bg='#E2E5DE', command=submit)
-send.grid(row=1, column=1, padx=1, pady=1)
+# ph = PIL.Image.open('background.png') # load the background image
+# #l = Label(root)
+# imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
+# bgimg = ImageTk.PhotoImage(imgb)
+# l = Label(root, image=bgimg)
+# l.config(image=bgimg)
+# l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+# l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
+#   # specify background color
 
 
+# root.bind('<Return>',dummyfunc)
+# # Create left,right and top frames
+# top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
+# top_frame.grid(row=0, column=0, padx=10, pady=10)
 
+# subframe= Frame(root, width = 700, height= 400)
+# subframe.grid(row=1, column=0, padx=10, pady=10)
 
-listbox = Listbox(history, width=55, height=30)
-  
-# Adding Listbox to the left
-# side of root window
-listbox.pack(side = LEFT, fill = BOTH, expand=True)
-  
-# Creating a Scrollbar and 
-# attaching it to root window
-scrollbar = Scrollbar(history)
-  
-# Adding Scrollbar to the right
-# side of root window
-scrollbar.pack(side = RIGHT, fill = BOTH) 
-      
-listbox.config(yscrollcommand = scrollbar.set)
-  
-scrollbar.config(command = listbox.yview)
+# left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
+# left_frame.grid(row=0, column=0, padx=2, pady=2)
+
+# show_prmpt.set((ans.decode()))
+# # load image to be "edited"
+# image  = PIL.Image.open("img.jpg")
+# resize_image = image.resize((450,500))
+# img = ImageTk.PhotoImage(resize_image)
+# print(ans.decode())
+# # Display image in right_frame
+# user_name = Label(top_frame,textvariable=show_prmpt, font=sz28).grid(row=0,column=0, padx=10, pady=10)
+
+# timr = Label(top_frame,textvariable=my_var,fg='Red', font=sz35)
+# timr.grid(row = 0,column=1, padx=10, pady=10)
+# Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
+
+# right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
+# right_frame.grid(row=0, column=1, padx=2, pady=2)
+
+# history = Frame(right_frame, width=350, height=400, bg='#E2E5DE')
+# history.grid(row=0, column=0)
+
+# inpframe = Frame(right_frame, width=200, height=400)
+# inpframe.grid(row=1, column=0, padx=1, pady=1)
+
+# inp = Entry(inpframe, width=50)
+# inp.grid(row=1, column=0, padx=1, pady=1)
+
+# send = Button(inpframe, text="Submit", bg='#E2E5DE', command=submit)
+# send.grid(row=1, column=1, padx=1, pady=1)
 
 
 
-t1 = threading.Thread(target=updatetime)
-t1.start()
-root.mainloop()
+
+# listbox = Listbox(history, width=55, height=30)
+
+# # Adding Listbox to the left
+# # side of root window
+# listbox.pack(side = LEFT, fill = BOTH, expand=True)
+
+# # Creating a Scrollbar and 
+# # attaching it to root window
+# scrollbar = Scrollbar(history)
+
+# # Adding Scrollbar to the right
+# # side of root window
+# scrollbar.pack(side = RIGHT, fill = BOTH) 
+    
+# listbox.config(yscrollcommand = scrollbar.set)
+
+# scrollbar.config(command = listbox.yview)
+
+
+
+# t1 = threading.Thread(target=updatetime)
+# t1.start()
+# root.mainloop()
