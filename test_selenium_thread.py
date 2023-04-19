@@ -59,10 +59,10 @@ try:
     dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN','diyx19@gmail.com':'JFLBAUEC'}
     ch = random.choice(list(dic))
 
-    df = pd.read_csv('cn_project_1\Skribbl-words.csv')
+    df = pd.read_csv('Skribbl-words.csv')
     df_new = (df['word'])
 
-    df = pd.read_csv('cn_project_1\words&imgs.csv')
+    df = pd.read_csv('words&imgs.csv')
 
     PATH = Service('C:\Program Files (x86)\chromedriver.exe')
     options = Options()

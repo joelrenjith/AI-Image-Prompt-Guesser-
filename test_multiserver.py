@@ -12,6 +12,7 @@ bit  = 0
 c = 0
 
 def listen():
+    global bit
     while(1):
         msg,id = mySocket.recvfrom(SIZE)
         msg = msg.decode()
@@ -35,14 +36,18 @@ def sendeveryone(msg):
 def lobby(id,username):
     global players
     if id not in players:
-        players[id] = username
-        os.system('cls')
-
-        for x in players:
-            print(x,':',players[x])
+        mySocket.sendto(str(len(players)).encode(),id)
         for i in players:
-            for k in players:
-                mySocket.sendto(players[k].encode(),i)
+            mySocket.sendto(players[i].encode(),id)
+
+
+        players[id] = username
+        # os.system('cls')
+
+        
+        print(id,':',username)
+        sendeveryone(username)
+        
        
         
 
@@ -50,6 +55,8 @@ def ready(id):
     global players,c,bit
     if id in players:
         c+=1
+        sendeveryone('ready')
+        sendeveryone(str(list(players).index(id)))
         if c == len(players):
             bit = 1
 
