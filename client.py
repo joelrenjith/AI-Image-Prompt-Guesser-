@@ -37,6 +37,7 @@ myMessage = "Hello!"
 # print(1)
 
 
+
 def listen():
     while(1):
         msg  = mySocket.recv(SIZE).decode()
@@ -56,7 +57,7 @@ def listen():
                 tempend=" seconds"
                 while(t!=0):
                     if(t==1):
-                        tempend="second"
+                        tempend=" second"
                     heading.set(temp+str(t)+tempend)
                     load.update()
                     time.sleep(1)
@@ -145,33 +146,15 @@ def on_resize_loading(event):
 def submituser():
     submitted=eyusn.get()
     mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-    t1 = threading.Thread(target=listen)
-    t1.start()
-    t1.join()
+    listen()
+    #t1 = threading.Thread(target=listen)
+    #t1.start()
+    #t1.join()
     nextwindow()
 
 
 def nextwindow():
     load.destroy()
-
-
-
-    ##################################################################################
-
-    '''
-
-
-
-
-
-
-    Ongoing work: Loading Screen for multiplayer
-
-
-
-
-    '''
-
 
 load=Tk()
 sz28 = tkFont.Font(size=28)
@@ -198,9 +181,9 @@ inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
 inp_frame.grid(row=1, column=0, padx=15, pady=15)
 
 eyusn=Entry(inp_frame, width=20)
-Submit= Button(inp_frame,text="Submit", width=15, command=submituser)
+Submit= Button(inp_frame,text="Submit", width=15, command=threading.Thread(target=submituser).start)
 
-load.bind('<Return>',load_dummyfunc)
+#load.bind('<Return>',threading.Thread(target=submituser).start)
 
 eyusn.grid(row=0)
 Submit.grid(row=1,pady=5)
