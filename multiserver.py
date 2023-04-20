@@ -104,6 +104,7 @@ def start_game():
             check,addr = mySocket.recvfrom(SIZE)
             check = check.decode().lower()
             if check == '__':
+                sendeveryone("finish")
                 sendeveryone(s)
                 sendeveryone(str(leaderboard))
                 break
@@ -111,9 +112,11 @@ def start_game():
                 leaderboard[players[addr]] += point
                 point = point - 1
                 msg = players[addr]+' goddit!!'
+                sendeveryone("goddit")
                 sendeveryone(msg)
                 # mySocket.sendto(s.encode('utf-8'),(addr))
                 if point ==0:
+                    sendeveryone("finish")
                     sendeveryone(s)
                     sendeveryone(str(leaderboard))
                     break
@@ -129,14 +132,18 @@ def start_game():
                     leaderboard[players[addr]] += point
                     point = point - 1
                     msg = players[addr]+' goddit!!'
+                    sendeveryone("goddit")
                     sendeveryone(msg)
                     # mySocket.sendto(s.encode('utf-8'),(addr))
                     if point ==0:
+                        sendeveryone("finish")
                         sendeveryone(s)
                         sendeveryone(str(leaderboard))
                         break
-                else:    
+                else:
+                    sendeveryone("msg")    
                     sendeveryone(players[addr]+' : '+check)
+                mySocket.sendto("new_pr".encode('utf-8'),(addr))
                 mySocket.sendto(convert(copy).encode('utf-8'),(addr))
     sendeveryone('!!')    
     
