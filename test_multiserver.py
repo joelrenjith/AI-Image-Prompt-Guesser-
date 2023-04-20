@@ -1,5 +1,10 @@
 from socket import socket, gethostbyname, AF_INET, SOCK_DGRAM
 import os
+import pandas as pd
+from test_selenium_thread import sel_thread
+from threading import Thread
+from server import convert
+import re
 PORT_NUMBER = 5000
 SIZE = 1024
 
@@ -24,6 +29,7 @@ def listen():
                 lobby(id,msg)
             else:
                 ready(id)
+    
         
 
 def sendeveryone(msg):
@@ -66,8 +72,56 @@ def ready(id):
         if c == len(players):
             bit = 1
 
-listen()
+def start_game():
+    global players
+    Thread(target=sel_thread).start()
+    df = pd.read_csv('Skribbl-words.csv')
+    s = df['string'][0]
+    print(s)
+    img_link = df['link'][0]
+    print(img_link)
+    copy = ''
+    vowel = ['a','e','i','o','u']
+    for i in s:
+        if i != ' ':
+            if i not in vowel:
+                copy+='_'
+            else:
+                copy+=i
+        else:
+            copy+=i
+    
+    sendeveryone(convert(copy))
+    sendeveryone(img_link)
+    while(1):
+        check,addr = mySocket.recvfrom(SIZE)
+        check = check.decode().lower()
+        if check == '__':
+            sendeveryone(s)
+            break
+        if check ==s:
+            msg = players[addr]+' goddit!!'
+            sendeveryone(msg)
+            # mySocket.sendto(s.encode('utf-8'),(addr))
+            break
+        else:
+            if check in s and len(check)>0:
+                print(copy)
+                for m in re.finditer(check, s):
+                    print(check, 'matched from position', m.start(), 'to', m.end())
+                copy  = copy.replace(copy[m.start():m.end()],check)
+                print(copy)
+            if copy == s:
+                msg = players[addr]+' goddit!!'
+                sendeveryone(msg)
+                # mySocket.sendto(s.encode('utf-8'),(addr))
+                break
+            sendeveryone(players[addr]+':'+check)
+            mySocket.sendto(convert(copy).encode('utf-8'),(addr))
 
+    
+listen()
+start_game()
     
 
 
