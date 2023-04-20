@@ -9,8 +9,8 @@ import tkinter.font as tkFont
 import time
 import threading
 I_C=-1
-#SERVER_IP   = '192.168.11.197'
-SERVER_IP   = '127.0.0.1'
+SERVER_IP   = '192.168.11.197'
+#SERVER_IP   = '127.0.0.1'
 PORT_NUMBER = 5000
 SIZE = 1024
 bit = 0
@@ -47,6 +47,9 @@ def listen():
                 x = mySocket.recv(SIZE).decode()
                 print(x)
                 players.insert(END,x)
+            l = eval(mySocket.recv(SIZE).decode())
+            for ind in l:
+                players.itemconfig(ind,{'fg':'Green'})
         else:
             if(msg=='ready'):
                 ind=int(mySocket.recv(SIZE).decode())
@@ -153,6 +156,10 @@ def submituser():
     nextwindow()
 
 
+def ready():
+    mySocket.sendto("1".encode(),(SERVER_IP,PORT_NUMBER))
+    print("SENT READY")
+
 def nextwindow():
     load.destroy()
 
@@ -212,7 +219,7 @@ players.config(yscrollcommand = scrollbar.set)
 scrollbar.config(command = players.yview)
 
 
-ready=Button(load,text="Ready?",command=nextwindow,width=10)
+ready=Button(load,text="Ready?",command=threading.Thread(target=ready).start,width=10)
 ready.grid(row=3, column=0,padx=15,pady=15)
 load.mainloop()
 
