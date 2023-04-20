@@ -12,7 +12,7 @@ offered_ip = "192.168.1.100"
 ip = gethostbyname(gethostname())
 # Create a socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.setsockopt(socket.SOL_SOCKET, 1)
+sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR, 1)
 sock.bind(('', 67))
 
 # Create an empty list to store the client pool
