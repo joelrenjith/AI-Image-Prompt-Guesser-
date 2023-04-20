@@ -74,51 +74,70 @@ def ready(id):
 
 def start_game():
     global players
+    
+    leaderboard = {}
+    for i in players:
+        leaderboard[players[i]] = 0
     Thread(target=sel_thread).start()
-    df = pd.read_csv('Skribbl-words.csv')
-    s = df['string'][0]
-    print(s)
-    img_link = df['link'][0]
-    print(img_link)
-    copy = ''
-    vowel = ['a','e','i','o','u']
-    for i in s:
-        if i != ' ':
-            if i not in vowel:
-                copy+='_'
+    df = pd.read_csv('words&imgs.csv')
+    for x in range(0,3):
+        point = len(players)
+        s = df['string'][0]
+        print(s)
+        img_link = df['link'][0]
+        print(img_link)
+        copy = ''
+        vowel = ['a','e','i','o','u']
+        for i in s:
+            if i != ' ':
+                if i not in vowel:
+                    copy+='_'
+                else:
+                    copy+=i
             else:
                 copy+=i
-        else:
-            copy+=i
-    
-    sendeveryone(convert(copy))
-    sendeveryone(img_link)
-    while(1):
-        check,addr = mySocket.recvfrom(SIZE)
-        check = check.decode().lower()
-        if check == '__':
-            sendeveryone(s)
-            break
-        if check ==s:
-            msg = players[addr]+' goddit!!'
-            sendeveryone(msg)
-            # mySocket.sendto(s.encode('utf-8'),(addr))
-            break
-        else:
-            if check in s and len(check)>0:
-                print(copy)
-                for m in re.finditer(check, s):
-                    print(check, 'matched from position', m.start(), 'to', m.end())
-                copy  = copy.replace(copy[m.start():m.end()],check)
-                print(copy)
-            if copy == s:
+        
+        sendeveryone(convert(copy))
+        sendeveryone(img_link)
+        while(1):
+            check,addr = mySocket.recvfrom(SIZE)
+            check = check.decode().lower()
+            if check == '__':
+                sendeveryone(s)
+                sendeveryone(str(leaderboard))
+                break
+            if check ==s:
+                leaderboard[players[addr]] += point
+                point = point - 1
                 msg = players[addr]+' goddit!!'
                 sendeveryone(msg)
                 # mySocket.sendto(s.encode('utf-8'),(addr))
-                break
-            sendeveryone(players[addr]+':'+check)
-            mySocket.sendto(convert(copy).encode('utf-8'),(addr))
-
+                if point ==0:
+                    sendeveryone(s)
+                    sendeveryone(str(leaderboard))
+                    break
+            else:
+                if check in s and len(check)>0:
+                    print(copy)
+                    for m in re.finditer(check, s):
+                        print(check, 'matched from position', m.start(), 'to', m.end())
+                    copy  = copy.replace(copy[m.start():m.end()],check)
+                    print(copy)
+                if copy == s:
+                    # mySocket.sendto(s.encode('utf-8'),(addr))
+                    leaderboard[players[addr]] += point
+                    point = point - 1
+                    msg = players[addr]+' goddit!!'
+                    sendeveryone(msg)
+                    # mySocket.sendto(s.encode('utf-8'),(addr))
+                    if point ==0:
+                        sendeveryone(s)
+                        sendeveryone(str(leaderboard))
+                        break
+                else:    
+                    sendeveryone(players[addr]+' : '+check)
+                mySocket.sendto(convert(copy).encode('utf-8'),(addr))
+    sendeveryone('!!')    
     
 listen()
 start_game()
