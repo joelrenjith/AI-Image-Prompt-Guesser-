@@ -97,8 +97,9 @@ def start_game():
             else:
                 copy+=i
         
-        sendeveryone(convert(copy))
+        
         sendeveryone(img_link)
+        sendeveryone(convert(copy))
         while(1):
             check,addr = mySocket.recvfrom(SIZE)
             check = check.decode().lower()
