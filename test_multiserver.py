@@ -10,19 +10,21 @@ print ("Test server listening on port {0}\n".format(PORT_NUMBER))
 players = {}
 bit  = 0
 c = 0
-
+ready_list = []
 def listen():
     global bit
     while(1):
+        if bit ==1:
+            sendeveryone('__')
+            return
         msg,id = mySocket.recvfrom(SIZE)
         msg = msg.decode()
         if bit ==0:
-            if msg!=1:
+            if msg!='1':
                 lobby(id,msg)
             else:
                 ready(id)
-        else: 
-            sendeveryone('__')
+        
 
 def sendeveryone(msg):
     global players
@@ -39,7 +41,7 @@ def lobby(id,username):
         mySocket.sendto(str(len(players)).encode(),id)
         for i in players:
             mySocket.sendto(players[i].encode(),id)
-
+        mySocket.sendto(str(ready_list).encode(),id)
 
         players[id] = username
         # os.system('cls')
@@ -53,11 +55,14 @@ def lobby(id,username):
         
 
 def ready(id):
-    global players,c,bit
+    global players,c,bit,ready_list
+    print('recived a ready from',players[id])
+
     if id in players:
         c+=1
         sendeveryone('ready')
         sendeveryone(str(list(players).index(id)))
+        ready_list.append(str(list(players).index(id)))
         if c == len(players):
             bit = 1
 
