@@ -96,33 +96,33 @@ def sel_thread():
             s=" ".join(l)
             return s
 
-        while(i<3):
-            s = generateString(df_new)
-            print(s)
-            if i>1:
-                retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
-                retry.click()
-            prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
-            prompt.clear()
-            prompt.send_keys(s)
-            prompt.send_keys(Keys.ENTER)
-            print('Enterred prompt')
-            img = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[6]/button[1]"))).click()
-            print('got results --> waiting for image')
-            element = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[2]/div[4]/a/img")))
-            src  = driver.find_element(By.XPATH,"/html/body/div[2]/div/div[2]/div[4]/a/img").get_attribute("src")
-            print(src+ "\n\n")
-            #print(src+ "\n\n")
-            entry = {'string':s,'link':src}
-            with open('words&imgs.csv','a',newline='') as f_object:
-                    writerObject = DictWriter(f_object,fieldnames=titles)
-                    writerObject.writerow(entry)
-                    f_object.close()
-            print(f'added image {i}')
-            i = i+1
+        
+        s = generateString(df_new)
+        print(s)
+        if i>1:
+            retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
+            retry.click()
+        prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
+        prompt.clear()
+        prompt.send_keys(s)
+        prompt.send_keys(Keys.ENTER)
+        print('Enterred prompt')
+        img = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[6]/button[1]"))).click()
+        print('got results --> waiting for image')
+        element = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[2]/div[4]/a/img")))
+        src  = driver.find_element(By.XPATH,"/html/body/div[2]/div/div[2]/div[4]/a/img").get_attribute("src")
+        print(src+ "\n\n")
+        #print(src+ "\n\n")
+        # entry = {'string':s,'link':src}
+        # # with open('words&imgs.csv','a',newline='') as f_object:
+        # #         writerObject = DictWriter(f_object,fieldnames=titles)
+        # #         writerObject.writerow(entry)
+        # #         f_object.close()
+        # # print(f'added image {i}')
+        driver.quit()
+        return [s,src]
 
     except Exception as e:
         print(e)
-        input()
         driver.quit()
-        quit()
+        return ('error happend')

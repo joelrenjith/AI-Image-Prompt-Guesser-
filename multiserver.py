@@ -40,7 +40,10 @@ def listen():
             else:
                 ready(id)
     
-        
+def img_get():
+    global players
+    if(len(players)>0):
+        t1 = Thread(target=sel_thread)
 
 def sendeveryone(msg):
     global players
@@ -159,14 +162,19 @@ def start_game():
     leaderboard = {}
     for i in players:
         leaderboard[players[i]] = 0
-    Thread(target=sel_thread).start()
+    
     df = pd.read_csv('words&imgs.csv')
     for x in range(0,3):
+        item = sel_thread()
+        print[item]
+
+        if type(item)==str:
+            quit()
         point = len(players)
-        s = df['string'][0]
-        print(s)
-        img_link = df['link'][0]
-        print(img_link)
+        s = item[0]
+        # print(s)
+        img_link = item[1]
+        # print(img_link)
         copy = ''
         vowel = ['a','e','i','o','u']
         for i in s:
