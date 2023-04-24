@@ -52,7 +52,7 @@ def game_listen():
         open('img.jpg','wb').write(r.content)
         ans,addr=mySocket.recvfrom(1024)
         print(ans.decode())
-        load.update()
+        root.update()
         msg,addr=mySocket.recvfrom(1024)
         msg = msg.decode()
         if(msg=='finish'):
@@ -84,7 +84,7 @@ def game_listen():
             board ,addr = mySocket.recvfrom(1024)
             print("new =",board.decode())
             show_prmpt.set(board.decode())
-            load.update()
+            root.update()
         elif(msg=="!!"):
             '''
             proceed to finishing screen
@@ -96,12 +96,12 @@ def game_listen():
         #     listbox.itemconfig(I_C,{'fg':'Green'})
         #     correct,addr = mySocket.recvfrom(1024)
         #     messagebox.showinfo('Game over','Answer = '+correct.decode())
-        #     load.destroy()
+        #     root.destroy()
         #     quit()
         # board ,addr = mySocket.recvfrom(1024)
         # print("new =",board.decode())
         # show_prmpt.set(board.decode())
-        # load.update()
+        # root.update()
 
 def listen():
     while(1):
@@ -175,7 +175,7 @@ def updatetime():
     while(t!=0):
         if bit ==1:
             return
-        load.update()
+        root.update()
         t = t-1
         my_var.set(str(t))
         time.sleep(1)
@@ -190,13 +190,13 @@ def updatetime():
 def on_resize(e):
     ph = PIL.Image.open('background.png') # load the background image
     #l = Label(load)
-    imgb = ph.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
+    imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
     bgimg = ImageTk.PhotoImage(imgb)
     l = Label(load, image=bgimg)
     l.config(image=bgimg)
     print("///////////////////////////////////\n")
-    print("The width of load window:", load.winfo_width())
-    print("\nThe height of load window:", load.winfo_height())
+    print("The width of load window:", root.winfo_width())
+    print("\nThe height of load window:", root.winfo_height())
     print("\n///////////////////////////////////\n")
 
 def on_resize_loading(event):
@@ -231,24 +231,24 @@ def nextwindow():
     flag=1
     for widget in load.winfo_children():
         widget.destroy()
-    load.update()
+    load.quit()
     game_listen()
     subframe.destroy()
     top_frame.destroy()
-    top_frame = LabelFrame(load, text="Game Over!", width=800, height=100) 
+    top_frame = LabelFrame(root, text="Game Over!", width=800, height=100) 
     top_frame.grid(row=0, column=0, padx=10, pady=10)
-    subframe= Frame(load, width = 700, height= 400)
+    subframe= Frame(root, width = 700, height= 400)
     subframe.grid(row=1, column=0, padx=10, pady=10)
     ldb= 'Leaderboard'
-    global sz28
-    global sz35
+    global siz28
+    global siz35
     global mbt
     lb = Label(top_frame,textvariable=ldb, font=sz35)
     lb.grid(row=0,column=0, padx=10, pady=10)
     alb = Label(top_frame,textvariable=mbt, font=sz28)
     alb.grid(row=0,column=0, padx=10, pady=10)
     time.sleep(10)
-    load.destroy()
+    root.destroy()
     quit()
 
 
@@ -261,63 +261,63 @@ LOADING SCREEN
 
 
 '''
-if(flag==0):
-    load.title("Waiting Stage")
-    load.geometry("848x666")
-    heading = StringVar()
 
-    phl = PIL.Image.open('background.png') # load the background image
-    #l = Label(load)
-    imgbl = phl.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
-    bgimgl = ImageTk.PhotoImage(imgbl)
-    lo = Label(load, image=bgimgl)
-    lo.config(image=bgimgl)
-    lo.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
-    lo.bind('<Configure>', on_resize_loading) # on_resize will be executed whenever label l is resized
+load.title("Waiting Stage")
+load.geometry("848x666")
+heading = StringVar()
 
-    heading.set("Guess the Prompt")
+phl = PIL.Image.open('background.png') # load the background image
+#l = Label(load)
+imgbl = phl.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
+bgimgl = ImageTk.PhotoImage(imgbl)
+lo = Label(load, image=bgimgl)
+lo.config(image=bgimgl)
+lo.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+lo.bind('<Configure>', on_resize_loading) # on_resize will be executed whenever label l is resized
 
-    top_frame = Label(load, textvariable=heading, width=30, height=1,font=sz35) 
-    top_frame.grid(row=0, column=0, padx=15, pady=15)
+heading.set("Guess the Prompt")
 
-    inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
-    inp_frame.grid(row=1, column=0, padx=15, pady=15)
+top_frame = Label(load, textvariable=heading, width=30, height=1,font=sz35) 
+top_frame.grid(row=0, column=0, padx=15, pady=15)
 
-    eyusn=Entry(inp_frame, width=20)
-    Submit= Button(inp_frame,text="Submit", width=15, command=threading.Thread(target=submituser).start)
+inp_frame = LabelFrame(load, text="Enter Your Username", width=15, height=1)
+inp_frame.grid(row=1, column=0, padx=15, pady=15)
 
-    #load.bind('<Return>',threading.Thread(target=submituser).start)
+eyusn=Entry(inp_frame, width=20)
+Submit= Button(inp_frame,text="Submit", width=15, command=threading.Thread(target=submituser).start)
 
-    eyusn.grid(row=0)
-    Submit.grid(row=1,pady=5)
+#load.bind('<Return>',threading.Thread(target=submituser).start)
 
-    subframe= Frame(load, width = 40, height= 5)
-    subframe.grid(row=2, column=0, padx=15, pady=15)
+eyusn.grid(row=0)
+Submit.grid(row=1,pady=5)
 
-    players = Listbox(subframe, width=30, height=4)
-    
-    # Adding Listbox to the left
-    # side of load window
-    players.pack(side=LEFT, fill = BOTH, expand=True)
-    
-    # Creating a Scrollbar and 
-    # attaching it to load window
-    scrollbar = Scrollbar(subframe)
-    
-    # Adding Scrollbar to the right
-    # side of load window
-    scrollbar.pack(side = RIGHT, fill = BOTH) 
-    #scrollbar.grid(row=0, column=1, sticky=NS)
+subframe= Frame(load, width = 40, height= 5)
+subframe.grid(row=2, column=0, padx=15, pady=15)
 
+players = Listbox(subframe, width=30, height=4)
 
-    players.config(yscrollcommand = scrollbar.set)
+# Adding Listbox to the left
+# side of load window
+players.pack(side=LEFT, fill = BOTH, expand=True)
 
-    scrollbar.config(command = players.yview)
+# Creating a Scrollbar and 
+# attaching it to load window
+scrollbar = Scrollbar(subframe)
+
+# Adding Scrollbar to the right
+# side of load window
+scrollbar.pack(side = RIGHT, fill = BOTH) 
+#scrollbar.grid(row=0, column=1, sticky=NS)
 
 
-    ready=Button(load,text="Ready?",command=threading.Thread(target=ready).start,width=10)
-    ready.grid(row=3, column=0,padx=15,pady=15)
-    load.mainloop()
+players.config(yscrollcommand = scrollbar.set)
+
+scrollbar.config(command = players.yview)
+
+
+ready=Button(load,text="Ready?",command=threading.Thread(target=ready).start,width=10)
+ready.grid(row=3, column=0,padx=15,pady=15)
+load.mainloop()
 #load.mainloop()
 
     #time.sleep(2)
@@ -337,44 +337,47 @@ GAME SCREEN
 
 
 '''
+root=Tk()
+siz28 = tkFont.Font(size=28)
+siz35 = tkFont.Font(size=35)
 
 my_var = StringVar()
 show_prmpt = StringVar()
-load.title("Guess the Prompt")  # title of the GUI window
-load.maxsize(1300, 1300)  # specify the max size the window can expand to
+root.title("Guess the Prompt")  # title of the GUI window
+root.maxsize(1300, 1300)  # specify the max size the window can expand to
 
-ph = PIL.Image.open('background.png') # load the background image
-#l = Label(load)
-imgb = ph.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
+ph = PIL.Image.open('background.png') # root the background image
+#l = Label(root)
+imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
 bgimg = ImageTk.PhotoImage(imgb)
-l = Label(load, image=bgimg)
+l = Label(root, image=bgimg)
 l.config(image=bgimg)
 l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
 l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
 # specify background color
 
 
-load.bind('<Return>',dummyfunc)
+root.bind('<Return>',dummyfunc)
 # Create left,right and top frames
-top_frame = LabelFrame(load, text="Guess the Prompt", width=800, height=100) 
+top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
 top_frame.grid(row=0, column=0, padx=10, pady=10)
 
-subframe= Frame(load, width = 700, height= 400)
+subframe= Frame(root, width = 700, height= 400)
 subframe.grid(row=1, column=0, padx=10, pady=10)
 
 left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
 left_frame.grid(row=0, column=0, padx=2, pady=2)
 
 show_prmpt.set((ans.decode()))
-# load image to be "edited"
+# root image to be "edited"
 image  = PIL.Image.open("img.jpg")
 resize_image = image.resize((450,500))
 img = ImageTk.PhotoImage(resize_image)
 print(ans.decode())
 # Display image in right_frame
-prompt = Label(top_frame,textvariable=show_prmpt, font=sz28).grid(row=0,column=0, padx=10, pady=10)
+prompt = Label(top_frame,textvariable=show_prmpt, font=siz28).grid(row=0,column=0, padx=10, pady=10)
 
-timr = Label(top_frame,textvariable=my_var,fg='Red', font=sz35)
+timr = Label(top_frame,textvariable=my_var,fg='Red', font=siz35)
 timr.grid(row = 0,column=1, padx=10, pady=10)
 Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
 
@@ -399,15 +402,15 @@ send.grid(row=1, column=1, padx=1, pady=1)
 listbox = Listbox(history, width=55, height=30)
 
 # Adding Listbox to the left
-# side of load window
+# side of root window
 listbox.pack(side = LEFT, fill = BOTH, expand=True)
 
 # Creating a Scrollbar and 
-# attaching it to load window
+# attaching it to root window
 scrollbar = Scrollbar(history)
 
 # Adding Scrollbar to the right
-# side of load window
+# side of root window
 scrollbar.pack(side = RIGHT, fill = BOTH) 
     
 listbox.config(yscrollcommand = scrollbar.set)
@@ -419,4 +422,4 @@ scrollbar.config(command = listbox.yview)
 t1 = threading.Thread(target=updatetime)
 t1.start()
 
-load.mainloop()
+root.mainloop()
