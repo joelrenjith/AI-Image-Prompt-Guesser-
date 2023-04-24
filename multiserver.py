@@ -11,8 +11,8 @@ from csv import DictWriter
 from socket import socket, gethostbyname, AF_INET, SOCK_DGRAM
 import os
 import pandas as pd
-# from test_selenium_thread import sel_thread
-# from threading import Thread
+from test_selenium_thread import sel_thread
+from threading import Thread
 from server import convert
 import re
 PORT_NUMBER = 5000
@@ -159,7 +159,7 @@ def start_game():
     leaderboard = {}
     for i in players:
         leaderboard[players[i]] = 0
-    # Thread(target=sel_thread).start()
+    Thread(target=sel_thread).start()
     df = pd.read_csv('words&imgs.csv')
     for x in range(0,3):
         point = len(players)

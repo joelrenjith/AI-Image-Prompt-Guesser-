@@ -20,13 +20,13 @@
 
 # print ("Test server listening on port {0}\n".format(PORT_NUMBER))
 # s = "Hello Client"
-# def convert(copy):
-#     disp_ans =''
-#     for i in copy:
-#         if i == ' ':
-#             disp_ans+=i+' '
-#         disp_ans+=i+' '
-#     return disp_ans
+def convert(copy):
+    disp_ans =''
+    for i in copy:
+        if i == ' ':
+            disp_ans+=i+' '
+        disp_ans+=i+' '
+    return disp_ans
 
 # data,addr = mySocket.recvfrom(SIZE)
 # mySocket.sendto('connected'.encode(),(addr))
