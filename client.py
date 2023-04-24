@@ -337,86 +337,86 @@ GAME SCREEN
 
 
 '''
-if flag==1:
-    my_var = StringVar()
-    show_prmpt = StringVar()
-    load.title("Guess the Prompt")  # title of the GUI window
-    load.maxsize(1300, 1300)  # specify the max size the window can expand to
 
-    ph = PIL.Image.open('background.png') # load the background image
-    #l = Label(load)
-    imgb = ph.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
-    bgimg = ImageTk.PhotoImage(imgb)
-    l = Label(load, image=bgimg)
-    l.config(image=bgimg)
-    l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
-    l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
-    # specify background color
+my_var = StringVar()
+show_prmpt = StringVar()
+load.title("Guess the Prompt")  # title of the GUI window
+load.maxsize(1300, 1300)  # specify the max size the window can expand to
 
-
-    load.bind('<Return>',dummyfunc)
-    # Create left,right and top frames
-    top_frame = LabelFrame(load, text="Guess the Prompt", width=800, height=100) 
-    top_frame.grid(row=0, column=0, padx=10, pady=10)
-
-    subframe= Frame(load, width = 700, height= 400)
-    subframe.grid(row=1, column=0, padx=10, pady=10)
-
-    left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
-    left_frame.grid(row=0, column=0, padx=2, pady=2)
-
-    show_prmpt.set((ans.decode()))
-    # load image to be "edited"
-    image  = PIL.Image.open("img.jpg")
-    resize_image = image.resize((450,500))
-    img = ImageTk.PhotoImage(resize_image)
-    print(ans.decode())
-    # Display image in right_frame
-    prompt = Label(top_frame,textvariable=show_prmpt, font=sz28).grid(row=0,column=0, padx=10, pady=10)
-
-    timr = Label(top_frame,textvariable=my_var,fg='Red', font=sz35)
-    timr.grid(row = 0,column=1, padx=10, pady=10)
-    Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
-
-    right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
-    right_frame.grid(row=0, column=1, padx=2, pady=2)
-
-    history = Frame(right_frame, width=350, height=400, bg='#E2E5DE')
-    history.grid(row=0, column=0)
-
-    inpframe = Frame(right_frame, width=200, height=400)
-    inpframe.grid(row=1, column=0, padx=1, pady=1)
-
-    inp = Entry(inpframe, width=50)
-    inp.grid(row=1, column=0, padx=1, pady=1)
-
-    send = Button(inpframe, text="Submit", bg='#E2E5DE', command=submit)
-    send.grid(row=1, column=1, padx=1, pady=1)
+ph = PIL.Image.open('background.png') # load the background image
+#l = Label(load)
+imgb = ph.resize((load.winfo_screenheight(), load.winfo_screenwidth()))# update the image of the label
+bgimg = ImageTk.PhotoImage(imgb)
+l = Label(load, image=bgimg)
+l.config(image=bgimg)
+l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
+# specify background color
 
 
+load.bind('<Return>',dummyfunc)
+# Create left,right and top frames
+top_frame = LabelFrame(load, text="Guess the Prompt", width=800, height=100) 
+top_frame.grid(row=0, column=0, padx=10, pady=10)
 
+subframe= Frame(load, width = 700, height= 400)
+subframe.grid(row=1, column=0, padx=10, pady=10)
 
-    listbox = Listbox(history, width=55, height=30)
+left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
+left_frame.grid(row=0, column=0, padx=2, pady=2)
 
-    # Adding Listbox to the left
-    # side of load window
-    listbox.pack(side = LEFT, fill = BOTH, expand=True)
+show_prmpt.set((ans.decode()))
+# load image to be "edited"
+image  = PIL.Image.open("img.jpg")
+resize_image = image.resize((450,500))
+img = ImageTk.PhotoImage(resize_image)
+print(ans.decode())
+# Display image in right_frame
+prompt = Label(top_frame,textvariable=show_prmpt, font=sz28).grid(row=0,column=0, padx=10, pady=10)
 
-    # Creating a Scrollbar and 
-    # attaching it to load window
-    scrollbar = Scrollbar(history)
+timr = Label(top_frame,textvariable=my_var,fg='Red', font=sz35)
+timr.grid(row = 0,column=1, padx=10, pady=10)
+Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
 
-    # Adding Scrollbar to the right
-    # side of load window
-    scrollbar.pack(side = RIGHT, fill = BOTH) 
-        
-    listbox.config(yscrollcommand = scrollbar.set)
+right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
+right_frame.grid(row=0, column=1, padx=2, pady=2)
 
-    scrollbar.config(command = listbox.yview)
+history = Frame(right_frame, width=350, height=400, bg='#E2E5DE')
+history.grid(row=0, column=0)
+
+inpframe = Frame(right_frame, width=200, height=400)
+inpframe.grid(row=1, column=0, padx=1, pady=1)
+
+inp = Entry(inpframe, width=50)
+inp.grid(row=1, column=0, padx=1, pady=1)
+
+send = Button(inpframe, text="Submit", bg='#E2E5DE', command=submit)
+send.grid(row=1, column=1, padx=1, pady=1)
 
 
 
-    t1 = threading.Thread(target=updatetime)
-    t1.start()
+
+listbox = Listbox(history, width=55, height=30)
+
+# Adding Listbox to the left
+# side of load window
+listbox.pack(side = LEFT, fill = BOTH, expand=True)
+
+# Creating a Scrollbar and 
+# attaching it to load window
+scrollbar = Scrollbar(history)
+
+# Adding Scrollbar to the right
+# side of load window
+scrollbar.pack(side = RIGHT, fill = BOTH) 
+    
+listbox.config(yscrollcommand = scrollbar.set)
+
+scrollbar.config(command = listbox.yview)
+
+
+
+t1 = threading.Thread(target=updatetime)
+t1.start()
 
 load.mainloop()
