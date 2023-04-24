@@ -21,7 +21,7 @@ client_pool = []
 while True:
     # Receive a packet
     data, addr = sock.recvfrom(1024)
-    print(addr)
+    
     pkt = Ether(data)
 
     # Check if it is a DHCP discover packet
@@ -32,7 +32,7 @@ while True:
         offer.show()
         # Send the offer packet
         print(addr[0])
-        sock.sendto(bytes(offer), (addr[0], 68))
+        sock.sendto(bytes(offer), (addr))
         print('sent offer')
 
     # Check if it is a DHCP request packet
@@ -43,7 +43,7 @@ while True:
 
         ack.show()
         # Send the acknowledgement packet
-        sock.sendto(bytes(ack), (addr[0], 68))
+        sock.sendto(bytes(ack), (addr))
 
         # Add the client's address and port number to the client pool
         client_pool.append(addr)
