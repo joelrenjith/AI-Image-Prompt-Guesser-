@@ -126,3 +126,4 @@ def sel_thread():
         input()
         driver.quit()
         quit()
+sel_thread()

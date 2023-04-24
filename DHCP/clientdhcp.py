@@ -12,13 +12,13 @@ print(gethostbyname(gethostname()))
 # Create a socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-
+serveraddr = ('127.0.0.1',5000)
 # Create a DHCP discover packet
 discover = Ether(dst="ff:ff:ff:ff:ff:ff", src=client_mac) / IP(src="0.0.0.0", dst="255.255.255.255") / UDP(sport=68, dport=67) / BOOTP(chaddr=client_mac) / DHCP(options=[("message-type", "discover"), "end"])
 print("DISCOVER:")
 discover.show()
 # Send the discover packet
-sock.sendto(bytes(discover), ('<broadcast>', 67))
+sock.sendto(bytes(discover), serveraddr)
 
 # Receive the offer packet
 data, addr = sock.recvfrom(1024)
@@ -33,7 +33,7 @@ request = Ether(dst="ff:ff:ff:ff:ff:ff", src=client_mac) / IP(src="0.0.0.0", dst
 print("\n\n\nREQUEST:")
 request.show()
 # Send the request packet
-sock.sendto(bytes(request), ('<broadcast>', 67))
+sock.sendto(bytes(request), serveraddr)
 
 # Receive the acknowledgement packet
 data, addr = sock.recvfrom(1024)
