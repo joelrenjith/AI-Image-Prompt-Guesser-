@@ -14,6 +14,7 @@ SERVER_IP   = '192.168.11.197'
 PORT_NUMBER = 5000
 SIZE = 1024
 bit = 0
+mbt=''
 ans = 'temp'
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
 
@@ -60,7 +61,7 @@ def game_listen():
             lb=eval(lb.decode())
             lb={k: v for k, v in sorted(lb.items(), key=lambda item: item[1])}
             lb = dict(reversed(list(lb.items())))
-            mbt=''
+            global mbt
             for k,v in lb.items():
                 mbt=mbt+k+" : "+v+"\n"
             messagebox.showinfo('End of Round ',round,'\n',3-round,' Rounds to go',mbt)
@@ -68,6 +69,7 @@ def game_listen():
             Display lb in mb
             
             '''
+            time.sleep(5)
         elif(msg=="goddit"):
             I_C=I_C +1
             msg=mySocket.recv(1024).decode()
@@ -86,6 +88,7 @@ def game_listen():
             '''
             proceed to finishing screen
             '''
+            return;
         # if msg!=submitted:
         #     global bit
         #     bit = 1
@@ -223,7 +226,24 @@ def ready():
 
 def nextwindow():
     load.destroy()
-    game_listen
+    game_listen()
+    subframe.destroy()
+    top_frame.destroy()
+    top_frame = LabelFrame(root, text="Game Over!", width=800, height=100) 
+    top_frame.grid(row=0, column=0, padx=10, pady=10)
+    subframe= Frame(root, width = 700, height= 400)
+    subframe.grid(row=1, column=0, padx=10, pady=10)
+    ldb= 'Leaderboard'
+    global sz28
+    global sz35
+    global mbt
+    lb = Label(top_frame,textvariable=ldb, font=sz35)
+    lb.grid(row=0,column=0, padx=10, pady=10)
+    alb = Label(top_frame,textvariable=mbt, font=sz28)
+    alb.grid(row=0,column=0, padx=10, pady=10)
+    time.sleep(10)
+    root.destroy()
+    quit()
 
 
 load=Tk()
@@ -329,7 +349,7 @@ resize_image = image.resize((450,500))
 img = ImageTk.PhotoImage(resize_image)
 print(ans.decode())
 # Display image in right_frame
-user_name = Label(top_frame,textvariable=show_prmpt, font=sz28).grid(row=0,column=0, padx=10, pady=10)
+prompt = Label(top_frame,textvariable=show_prmpt, font=sz28).grid(row=0,column=0, padx=10, pady=10)
 
 timr = Label(top_frame,textvariable=my_var,fg='Red', font=sz35)
 timr.grid(row = 0,column=1, padx=10, pady=10)
