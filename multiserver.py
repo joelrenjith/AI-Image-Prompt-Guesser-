@@ -166,10 +166,11 @@ def start_game():
     df = pd.read_csv('words&imgs.csv')
     for x in range(0,3):
         item = sel_thread()
-        print[item]
 
         if type(item)==str:
+            print(item)
             quit()
+        print(item)
         point = len(players)
         s = item[0]
         # print(s)
@@ -188,7 +189,9 @@ def start_game():
         
         
         sendeveryone(img_link)
+        print('sent img')
         sendeveryone(convert(copy))
+        print('sent string')
         while(1):
             check,addr = mySocket.recvfrom(SIZE)
             check = check.decode().lower()

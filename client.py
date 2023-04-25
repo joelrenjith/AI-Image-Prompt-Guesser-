@@ -15,7 +15,7 @@ PORT_NUMBER = 5000
 SIZE = 1024
 bit = 0
 mbt=''
-ans = 'temp'
+ans = 'waiting for string'
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
 flag=0
 
@@ -41,18 +41,37 @@ myMessage = "Hello!"
 
 def game_listen():
     global I_C
-    global lb
+    global lb,root,left_frame,listbox,show_prmpt,imglbl
     lb={}
     round=0
     while(1):
         round=round+1
+        # while((root.winfo_exists())==0):
+        #     continue
+        try:
+            image  = PIL.Image.open("loading.jpg")
+            resize_image = image.resize((450,500))
+            img = ImageTk.PhotoImage(resize_image)
+            imglbl.config(image = img)
+            left_frame.update()
+        except Exception as e:
+            print(e)
+            
         data,addr = mySocket.recvfrom(1024)
         img_link = data.decode()
         r = requests.get(img_link,allow_redirects=True)
         open('img.jpg','wb').write(r.content)
         ans,addr=mySocket.recvfrom(1024)
+        ans = ans.decode()
         print(ans.decode())
+        image  = PIL.Image.open("img.jpg")
+        resize_image = image.resize((450,500))
+        img = ImageTk.PhotoImage(resize_image)
+        imglbl.config(image =img)
+        show_prmpt.set(ans)
+        t1.start()
         root.update()
+        # root.update()
         msg,addr=mySocket.recvfrom(1024)
         msg = msg.decode()
         if(msg=='finish'):
@@ -140,6 +159,7 @@ def load_dummyfunc(e):
     submituser()
 
 def submit():
+    global inp
     submitted=inp.get()
     mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
     # bit,addr=mySocket.recvfrom(1024)
@@ -167,7 +187,7 @@ def dummyfunc(e):
     submit()
 
 def updatetime():
-    global bit
+    global bit,root
     t = 90
     global my_var
     my_var.set(str(t))
@@ -226,12 +246,102 @@ def ready():
     print("SENT READY")
 
 def nextwindow():
-
-    global flag
+    global root
+    global flag,sz28,sz35
+    global my_var,show_prmpt,ph,imgb,bgimg,l,top_frame,subframe,left_frame,imglbl,prompt,timr,right_frame,history,inp_frame,inp,send,listbox,scrollbar,t1
     flag=1
-    for widget in load.winfo_children():
-        widget.destroy()
-    load.quit()
+    # for widget in load.winfo_children():
+    #     widget.destroy()
+    load.geometry('1x1')
+    root=Toplevel(load)
+    root.title('Guess the word!!')
+    # time.sleep(3)
+    siz28 = tkFont.Font(size=28)
+    siz35 = tkFont.Font(size=35)
+
+    my_var = StringVar()
+    my_var.set(str(90))
+    show_prmpt = StringVar()
+    show_prmpt.set(ans)
+    root.title("Guess the Prompt")  # title of the GUI window
+    root.maxsize(1300, 1300)  # specify the max size the window can expand to
+
+    ph = PIL.Image.open('background.png') # root the background image
+    #l = Label(root)
+    imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
+    bgimg = ImageTk.PhotoImage(imgb)
+    l = Label(root, image=bgimg)
+    l.config(image=bgimg)
+    l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+    l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
+    # specify background color
+
+
+    root.bind('<Return>',dummyfunc)
+    # Create left,right and top frames
+    top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
+    top_frame.grid(row=0, column=0, padx=10, pady=10)
+
+    subframe= Frame(root, width = 700, height= 400)
+    subframe.grid(row=1, column=0, padx=10, pady=10)
+
+    left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
+    left_frame.grid(row=0, column=0, padx=2, pady=2)
+
+    # show_prmpt.set((ans.decode()))
+    # root image to be "edited"
+    # image  = PIL.Image.open("img.jpg")
+    # resize_image = image.resize((450,500))
+    # img = ImageTk.PhotoImage(resize_image)
+    # print(ans.decode())
+    # Display image in right_frame
+    prompt = Label(top_frame,textvariable=show_prmpt, font=siz28).grid(row=0,column=0, padx=10, pady=10)
+
+    timr = Label(top_frame,textvariable=my_var,fg='Red', font=siz35)
+    timr.grid(row = 0,column=1, padx=10, pady=10)
+    imglbl = Label(left_frame)
+    imglbl.grid(row=0,column=0, padx=5, pady=5)
+
+    right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
+    right_frame.grid(row=0, column=1, padx=2, pady=2)
+
+    history = Frame(right_frame, width=350, height=400, bg='#E2E5DE')
+    history.grid(row=0, column=0)
+
+    inpframe = Frame(right_frame, width=200, height=400)
+    inpframe.grid(row=1, column=0, padx=1, pady=1)
+
+    inp = Entry(inpframe, width=50)
+    inp.grid(row=1, column=0, padx=1, pady=1)
+
+    send = Button(inpframe, text="Submit", bg='#E2E5DE', command=submit)
+    send.grid(row=1, column=1, padx=1, pady=1)
+
+
+
+
+    listbox = Listbox(history, width=55, height=30)
+
+    # Adding Listbox to the left
+    # side of root window
+    listbox.pack(side = LEFT, fill = BOTH, expand=True)
+
+    # Creating a Scrollbar and 
+    # attaching it to root window
+    scrollbar = Scrollbar(history)
+
+    # Adding Scrollbar to the right
+    # side of root window
+    scrollbar.pack(side = RIGHT, fill = BOTH) 
+        
+    listbox.config(yscrollcommand = scrollbar.set)
+
+    scrollbar.config(command = listbox.yview)
+
+
+
+    t1 = threading.Thread(target=updatetime)
+    
     game_listen()
     subframe.destroy()
     top_frame.destroy()
@@ -240,8 +350,8 @@ def nextwindow():
     subframe= Frame(root, width = 700, height= 400)
     subframe.grid(row=1, column=0, padx=10, pady=10)
     ldb= 'Leaderboard'
-    global siz28
-    global siz35
+    # global siz28
+    # global siz35
     global mbt
     lb = Label(top_frame,textvariable=ldb, font=sz35)
     lb.grid(row=0,column=0, padx=10, pady=10)
@@ -337,89 +447,91 @@ GAME SCREEN
 
 
 '''
-root=Tk()
-siz28 = tkFont.Font(size=28)
-siz35 = tkFont.Font(size=35)
+# root=Toplevel(load)
+# siz28 = tkFont.Font(size=28)
+# siz35 = tkFont.Font(size=35)
 
-my_var = StringVar()
-show_prmpt = StringVar()
-root.title("Guess the Prompt")  # title of the GUI window
-root.maxsize(1300, 1300)  # specify the max size the window can expand to
+# my_var = StringVar()
+# my_var.set(str(90))
+# show_prmpt = StringVar()
+# show_prmpt.set(ans)
+# root.title("Guess the Prompt")  # title of the GUI window
+# root.maxsize(1300, 1300)  # specify the max size the window can expand to
 
-ph = PIL.Image.open('background.png') # root the background image
-#l = Label(root)
-imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
-bgimg = ImageTk.PhotoImage(imgb)
-l = Label(root, image=bgimg)
-l.config(image=bgimg)
-l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
-l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
-# specify background color
-
-
-root.bind('<Return>',dummyfunc)
-# Create left,right and top frames
-top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
-top_frame.grid(row=0, column=0, padx=10, pady=10)
-
-subframe= Frame(root, width = 700, height= 400)
-subframe.grid(row=1, column=0, padx=10, pady=10)
-
-left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
-left_frame.grid(row=0, column=0, padx=2, pady=2)
-
-show_prmpt.set((ans.decode()))
-# root image to be "edited"
-image  = PIL.Image.open("img.jpg")
-resize_image = image.resize((450,500))
-img = ImageTk.PhotoImage(resize_image)
-print(ans.decode())
-# Display image in right_frame
-prompt = Label(top_frame,textvariable=show_prmpt, font=siz28).grid(row=0,column=0, padx=10, pady=10)
-
-timr = Label(top_frame,textvariable=my_var,fg='Red', font=siz35)
-timr.grid(row = 0,column=1, padx=10, pady=10)
-Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
-
-right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
-right_frame.grid(row=0, column=1, padx=2, pady=2)
-
-history = Frame(right_frame, width=350, height=400, bg='#E2E5DE')
-history.grid(row=0, column=0)
-
-inpframe = Frame(right_frame, width=200, height=400)
-inpframe.grid(row=1, column=0, padx=1, pady=1)
-
-inp = Entry(inpframe, width=50)
-inp.grid(row=1, column=0, padx=1, pady=1)
-
-send = Button(inpframe, text="Submit", bg='#E2E5DE', command=submit)
-send.grid(row=1, column=1, padx=1, pady=1)
+# ph = PIL.Image.open('background.png') # root the background image
+# #l = Label(root)
+# imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
+# bgimg = ImageTk.PhotoImage(imgb)
+# l = Label(root, image=bgimg)
+# l.config(image=bgimg)
+# l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
+# l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
+# # specify background color
 
 
+# root.bind('<Return>',dummyfunc)
+# # Create left,right and top frames
+# top_frame = LabelFrame(root, text="Guess the Prompt", width=800, height=100) 
+# top_frame.grid(row=0, column=0, padx=10, pady=10)
+
+# subframe= Frame(root, width = 700, height= 400)
+# subframe.grid(row=1, column=0, padx=10, pady=10)
+
+# left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
+# left_frame.grid(row=0, column=0, padx=2, pady=2)
+
+# # show_prmpt.set((ans.decode()))
+# # root image to be "edited"
+# # image  = PIL.Image.open("img.jpg")
+# # resize_image = image.resize((450,500))
+# # img = ImageTk.PhotoImage(resize_image)
+# # print(ans.decode())
+# # Display image in right_frame
+# prompt = Label(top_frame,textvariable=show_prmpt, font=siz28).grid(row=0,column=0, padx=10, pady=10)
+
+# timr = Label(top_frame,textvariable=my_var,fg='Red', font=siz35)
+# timr.grid(row = 0,column=1, padx=10, pady=10)
+# imglbl = Label(left_frame).grid(row=0,column=0, padx=5, pady=5)
+
+# right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
+# right_frame.grid(row=0, column=1, padx=2, pady=2)
+
+# history = Frame(right_frame, width=350, height=400, bg='#E2E5DE')
+# history.grid(row=0, column=0)
+
+# inpframe = Frame(right_frame, width=200, height=400)
+# inpframe.grid(row=1, column=0, padx=1, pady=1)
+
+# inp = Entry(inpframe, width=50)
+# inp.grid(row=1, column=0, padx=1, pady=1)
+
+# send = Button(inpframe, text="Submit", bg='#E2E5DE', command=submit)
+# send.grid(row=1, column=1, padx=1, pady=1)
 
 
-listbox = Listbox(history, width=55, height=30)
 
-# Adding Listbox to the left
-# side of root window
-listbox.pack(side = LEFT, fill = BOTH, expand=True)
 
-# Creating a Scrollbar and 
-# attaching it to root window
-scrollbar = Scrollbar(history)
+# listbox = Listbox(history, width=55, height=30)
 
-# Adding Scrollbar to the right
-# side of root window
-scrollbar.pack(side = RIGHT, fill = BOTH) 
+# # Adding Listbox to the left
+# # side of root window
+# listbox.pack(side = LEFT, fill = BOTH, expand=True)
+
+# # Creating a Scrollbar and 
+# # attaching it to root window
+# scrollbar = Scrollbar(history)
+
+# # Adding Scrollbar to the right
+# # side of root window
+# scrollbar.pack(side = RIGHT, fill = BOTH) 
     
-listbox.config(yscrollcommand = scrollbar.set)
+# listbox.config(yscrollcommand = scrollbar.set)
 
-scrollbar.config(command = listbox.yview)
+# scrollbar.config(command = listbox.yview)
 
 
 
-t1 = threading.Thread(target=updatetime)
-t1.start()
+# t1 = threading.Thread(target=updatetime)
+# t1.start()
 
 root.mainloop()
