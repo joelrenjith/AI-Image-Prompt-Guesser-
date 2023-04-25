@@ -41,18 +41,31 @@ myMessage = "Hello!"
 
 def game_listen():
     global I_C
+    global ans
     global lb
     lb={}
     round=0
     while(1):
         round=round+1
+        image  = PIL.Image.open("loading.png")
+        resize_image = image.resize((450,500))
+        img = ImageTk.PhotoImage(resize_image)
+        ai_image.config(image=img)
+        root.update()
         data,addr = mySocket.recvfrom(1024)
         img_link = data.decode()
         r = requests.get(img_link,allow_redirects=True)
         open('img.jpg','wb').write(r.content)
+        image  = PIL.Image.open("img.jpg")
+        resize_image = image.resize((450,500))
+        img = ImageTk.PhotoImage(resize_image)
+        ai_image.config(image=img)
+        root.update()
         ans,addr=mySocket.recvfrom(1024)
         print(ans.decode())
+        ans=ans.decode()
         root.update()
+
         msg,addr=mySocket.recvfrom(1024)
         msg = msg.decode()
         if(msg=='finish'):
@@ -120,7 +133,7 @@ def listen():
                 ind=int(mySocket.recv(SIZE).decode())
                 players.itemconfig(ind,{'fg':'Green'})
             elif(msg=='__'):
-                t=10
+                t=2
                 temp= "Game starting in "
                 tempend=" seconds"
                 while(t!=0):
@@ -175,7 +188,7 @@ def updatetime():
     while(t!=0):
         if bit ==1:
             return
-        root.update()
+        top_frame.update()
         t = t-1
         my_var.set(str(t))
         time.sleep(1)
@@ -229,9 +242,10 @@ def nextwindow():
 
     global flag
     flag=1
-    for widget in load.winfo_children():
-        widget.destroy()
-    load.quit()
+    #for widget in load.winfo_children():
+        #widget.destroy()
+    load.destroy()
+    time.sleep(2)
     game_listen()
     subframe.destroy()
     top_frame.destroy()
@@ -345,16 +359,14 @@ my_var = StringVar()
 show_prmpt = StringVar()
 root.title("Guess the Prompt")  # title of the GUI window
 root.maxsize(1300, 1300)  # specify the max size the window can expand to
-
-ph = PIL.Image.open('background.png') # root the background image
-#l = Label(root)
+ph = PIL.Image.open('background.png') # load the background image
+#l = Label(load)
 imgb = ph.resize((root.winfo_screenheight(), root.winfo_screenwidth()))# update the image of the label
 bgimg = ImageTk.PhotoImage(imgb)
-l = Label(root, image=bgimg)
+l = Label(load, image=bgimg)
 l.config(image=bgimg)
 l.place(x=0, y=0, relwidth=1, relheight=1) # make label l to fit the parent window always
 l.bind('<Configure>', on_resize) # on_resize will be executed whenever label l is resized
-# specify background color
 
 
 root.bind('<Return>',dummyfunc)
@@ -368,18 +380,23 @@ subframe.grid(row=1, column=0, padx=10, pady=10)
 left_frame = LabelFrame(subframe, text="Image:", width=450, height=300)
 left_frame.grid(row=0, column=0, padx=2, pady=2)
 
-show_prmpt.set((ans.decode()))
+show_prmpt.set(ans)
 # root image to be "edited"
-image  = PIL.Image.open("img.jpg")
-resize_image = image.resize((450,500))
-img = ImageTk.PhotoImage(resize_image)
-print(ans.decode())
+
+# image  = PIL.Image.open("loading.png")
+# resize_image = image.resize((450,500))
+# img = ImageTk.PhotoImage(resize_image)
+ai_image = Label(left_frame)
+ai_image.grid(row=0,column=0, padx=5, pady=5)
+
+
+print(ans)
 # Display image in right_frame
 prompt = Label(top_frame,textvariable=show_prmpt, font=siz28).grid(row=0,column=0, padx=10, pady=10)
 
 timr = Label(top_frame,textvariable=my_var,fg='Red', font=siz35)
 timr.grid(row = 0,column=1, padx=10, pady=10)
-Label(left_frame, image=img).grid(row=0,column=0, padx=5, pady=5)
+
 
 right_frame = LabelFrame(subframe, text="Chat", width=200, height=500)
 right_frame.grid(row=0, column=1, padx=2, pady=2)
