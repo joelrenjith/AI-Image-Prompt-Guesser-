@@ -9,8 +9,8 @@ import tkinter.font as tkFont
 import time
 import threading
 I_C=-1
-#SERVER_IP   = '192.168.11.197'
-SERVER_IP   = '127.0.0.1'
+SERVER_IP   = '192.168.11.197'
+#SERVER_IP   = '127.0.0.1'
 PORT_NUMBER = 5000
 SIZE = 1024
 bit = 0
@@ -54,7 +54,9 @@ def game_listen():
                 resize_image = image.resize((450,500))
                 img = ImageTk.PhotoImage(resize_image)
                 imglbl.config(image = img)
+                show_prmpt.set("waiting for prompt")
                 left_frame.update()
+                top_frame.update()
             except Exception as e:
                 print(e)
                 
@@ -85,9 +87,10 @@ def game_listen():
             lb = dict(reversed(list(lb.items())))
             global mbt
             for k,v in lb.items():
-                mbt=mbt+str(k)+" : "+str(v)+"\n"
+                mbt=mbt+str(k)+" : "+str(v)+" points"+"\n"
             mbtt='End of Round '+str(round)+'\n'+str(3-round)+' Rounds to go\n'+mbt
-            messagebox.showinfo(mbtt)
+            print(mbtt)
+            messagebox.showinfo("Round Over", mbtt)
             flag=0
             '''
             Display lb in mb
@@ -237,6 +240,7 @@ def on_resize_loading(event):
 
 def submituser():
     submitted=eyusn.get()
+    
     mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
     listen()
     #t1 = threading.Thread(target=listen)
