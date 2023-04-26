@@ -125,4 +125,4 @@ def sel_thread():
     except Exception as e:
         print(e)
         driver.quit()
-        return ('error happend')
+        return ('error occured on test_selenium_thread.py')

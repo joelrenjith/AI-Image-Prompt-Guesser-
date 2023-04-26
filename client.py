@@ -40,37 +40,39 @@ myMessage = "Hello!"
 # print(1)
 
 def game_listen():
-    global I_C
+    global I_C, flag
     global lb,root,left_frame,listbox,show_prmpt,imglbl
     lb={}
     round=0
     while(1):
-        round=round+1
+        if(flag==0):
+            round=round+1
         # while((root.winfo_exists())==0):
         #     continue
-        try:
-            image  = PIL.Image.open("loading.jpg")
+            try:
+                image  = PIL.Image.open("loading.jpg")
+                resize_image = image.resize((450,500))
+                img = ImageTk.PhotoImage(resize_image)
+                imglbl.config(image = img)
+                left_frame.update()
+            except Exception as e:
+                print(e)
+                
+            data,addr = mySocket.recvfrom(1024)
+            img_link = data.decode()
+            r = requests.get(img_link,allow_redirects=True)
+            open('img.jpg','wb').write(r.content)
+            ans,addr=mySocket.recvfrom(1024)
+            ans = ans.decode()
+            print(ans)
+            image  = PIL.Image.open("img.jpg")
             resize_image = image.resize((450,500))
             img = ImageTk.PhotoImage(resize_image)
-            imglbl.config(image = img)
-            left_frame.update()
-        except Exception as e:
-            print(e)
-            
-        data,addr = mySocket.recvfrom(1024)
-        img_link = data.decode()
-        r = requests.get(img_link,allow_redirects=True)
-        open('img.jpg','wb').write(r.content)
-        ans,addr=mySocket.recvfrom(1024)
-        ans = ans.decode()
-        print(ans.decode())
-        image  = PIL.Image.open("img.jpg")
-        resize_image = image.resize((450,500))
-        img = ImageTk.PhotoImage(resize_image)
-        imglbl.config(image =img)
-        show_prmpt.set(ans)
-        t1.start()
-        root.update()
+            imglbl.config(image =img)
+            show_prmpt.set(ans)
+            t1.start()
+            root.update()
+            flag=1
         # root.update()
         msg,addr=mySocket.recvfrom(1024)
         msg = msg.decode()
@@ -83,8 +85,10 @@ def game_listen():
             lb = dict(reversed(list(lb.items())))
             global mbt
             for k,v in lb.items():
-                mbt=mbt+k+" : "+v+"\n"
-            messagebox.showinfo('End of Round ',round,'\n',3-round,' Rounds to go',mbt)
+                mbt=mbt+str(k)+" : "+str(v)+"\n"
+            mbtt='End of Round '+str(round)+'\n'+str(3-round)+' Rounds to go\n'+mbt
+            messagebox.showinfo(mbtt)
+            flag=0
             '''
             Display lb in mb
             
@@ -247,9 +251,9 @@ def ready():
 
 def nextwindow():
     global root
-    global flag,sz28,sz35
+    global sz28,sz35
     global my_var,show_prmpt,ph,imgb,bgimg,l,top_frame,subframe,left_frame,imglbl,prompt,timr,right_frame,history,inp_frame,inp,send,listbox,scrollbar,t1
-    flag=1
+
     # for widget in load.winfo_children():
     #     widget.destroy()
     load.geometry('1x1')
