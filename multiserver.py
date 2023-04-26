@@ -22,12 +22,13 @@ hostName = gethostbyname( '0.0.0.0' )
 mySocket = socket( AF_INET, SOCK_DGRAM )
 mySocket.bind( (hostName, PORT_NUMBER) )
 print ("Test server listening on port {0}\n".format(PORT_NUMBER))
+item = []
 players = {}
 bit  = 0
 c = 0
 ready_list = []
 def listen():
-    global bit
+    global bit,players
     while(1):
         if bit ==1:
             sendeveryone('__')
@@ -37,14 +38,93 @@ def listen():
         if bit ==0:
             if msg!='1':
                 lobby(id,msg)
+                if len(players) ==1:
+                    t1 = Thread(target = img_get)
+                    t1.start()
             else:
                 ready(id)
-    
-def img_get():
-    global players
-    if(len(players)>0):
-        t1 = Thread(target=sel_thread)
 
+def generateString(x):
+                l = list(x.sample(n=2))
+                s=" ".join(l)
+                return s   
+def img_get():
+    global item
+    try:
+        PATH = Service('C:\Program Files (x86)\chromedriver.exe')
+        options = Options()
+        #options.binary_location = r'C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe'
+        options.accept_insecure_certs = True
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument('--allow-running-insecure-content')
+        options.binary_location = r'C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe'
+    
+       
+        dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN','diyx19@gmail.com':'JFLBAUEC'}
+        ch = random.choice(list(dic))
+
+        df = pd.read_csv('Skribbl-words.csv')
+        df_new = (df['word'])
+
+        #df = pd.read_csv('cn_project_1\words&imgs.csv')
+        titles = ['string','link']
+
+        
+        # options.headless = True
+        driver = webdriver.Chrome( service = PATH,options = options)
+        driver.get('https://freeimagegenerator.com/')
+        print('opened website --> waiting for sign in')
+
+        sign = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/nav/div[3]/div/div[2]/ul/li/a"))).click()
+        art = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/a[1]"))).click()
+        user = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/form/div/div[1]/input"))).send_keys(ch)
+        pswrd = driver.find_element(By.XPATH,"/html/body/div[2]/div/form/div/div[2]/input")
+        pswrd.send_keys(dic[ch])
+        login  =driver.find_element(By.XPATH,"/html/body/div[2]/div/form/div/div[3]/a")
+        login.click()
+        print('Sign-in done')
+        
+
+    
+        for i in range(0,3):
+            head = WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH,"/html/body/header/div/div/div[1]/a[1]"))).click()
+
+            i = 1
+            
+
+            
+
+            
+            s = generateString(df_new)
+            print(s)
+            if i>1:
+                retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
+                retry.click()
+            prompt=  WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[2]/div[1]/div[1]/input")))
+            prompt.clear()
+            prompt.send_keys(s)
+            prompt.send_keys(Keys.ENTER)
+            print('Enterred prompt')
+            img = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[3]/div/div[2]/div[6]/button[1]"))).click()
+            print('got results --> waiting for image')
+            element = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[2]/div[4]/a/img")))
+            src  = driver.find_element(By.XPATH,"/html/body/div[2]/div/div[2]/div[4]/a/img").get_attribute("src")
+            print(src+ "\n\n")
+            #print(src+ "\n\n")
+            # entry = {'string':s,'link':src}
+            # # with open('words&imgs.csv','a',newline='') as f_object:
+            # #         writerObject = DictWriter(f_object,fieldnames=titles)
+            # #         writerObject.writerow(entry)
+            # #         f_object.close()
+            # # print(f'added image {i}')
+            
+            l  = [s,src]
+            item.append(list(l))
+            print(item)
+    except Exception as e:
+        print(e)
+        return ('error occured on test_selenium_thread.py')
+    driver.quit()
 def sendeveryone(msg):
     global players
     for id in players:
@@ -157,24 +237,31 @@ def ready(id):
             bit = 1
 
 def start_game():
-    global players
+    global players,item
     
     leaderboard = {}
     for i in players:
         leaderboard[players[i]] = 0
-    
+    print('game started')
     df = pd.read_csv('words&imgs.csv')
     for x in range(0,3):
-        item = sel_thread()
+        # item = sel_thread()
+        while(1):
+            try:
+                data = item[x]
+            except Exception as e:
 
+                continue
+            else:
+                break
         if type(item)==str:
             print(item)
             quit()
         print(item)
         point = len(players)
-        s = item[0]
+        s = data[0]
         # print(s)
-        img_link = item[1]
+        img_link = data[1]
         # print(img_link)
         copy = ''
         vowel = ['a','e','i','o','u']
