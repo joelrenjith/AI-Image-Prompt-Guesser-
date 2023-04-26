@@ -12,7 +12,8 @@ print(gethostbyname(gethostname()))
 # Create a socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-serveraddr = ('127.0.0.1',5000)
+#serveraddr = ('127.0.0.1',5000)
+serveraddr = ('192.168.11.197',67)
 # Create a DHCP discover packet
 discover = Ether(dst="ff:ff:ff:ff:ff:ff", src=client_mac) / IP(src="0.0.0.0", dst="255.255.255.255") / UDP(sport=68, dport=67) / BOOTP(chaddr=client_mac) / DHCP(options=[("message-type", "discover"), "end"])
 print("DISCOVER:")
