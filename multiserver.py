@@ -37,7 +37,7 @@ bit  = 0
 c = 0
 ready_list = []
 def dhcp_server(data,addr):
-    
+        global offered_ip
         titles = ['address','allotted']
         df1 = pd.read_csv('Pool.csv')
         # Define the MAC address of the server and the IP address to offer
@@ -103,19 +103,22 @@ def listen():
             sendeveryone('__')
             return
         msg,id = mySocket.recvfrom(SIZE)
-        msg = msg.decode()
+        # msg = msg.decode()
         if bit ==0:
-            if msg!='1':
-                pkt = Ether(msg)
-                if DHCP in pkt:
-                    dhcp_server(msg,id)
-                else:
+            try:
+                if DHCP in Ether(msg):
+                        dhcp_server(msg,id)
+            except:
+                msg = msg.decode()
+                if msg!='1':
                     lobby(id,msg)
-                if len(players) ==1:
-                    t1 = Thread(target = img_get)
-                    t1.start()
-            else:
-                ready(id)
+                    if len(players) ==1:
+                        t1 = Thread(target = img_get)
+                        t1.start()
+                else:
+                    ready(id)
+
+                
 
 def generateString(x):
                 l = list(x.sample(n=2))
