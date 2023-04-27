@@ -14,8 +14,8 @@ import time
 import threading
 from getmac import get_mac_address as gma
 I_C=-1
-SERVER_IP   = '192.168.11.197'
-#SERVER_IP   = '127.0.0.1'
+#SERVER_IP   = '192.168.11.197'
+SERVER_IP   = '127.0.0.1'
 PORT_NUMBER = 5000
 serveraddr = (SERVER_IP,PORT_NUMBER)
 SIZE = 1024
@@ -25,7 +25,7 @@ ans = 'waiting for string'
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
 flag=0
 
-mySocket = socket( AF_INET, SOCK_DGRAM )
+mySocket = socket.socket( AF_INET, SOCK_DGRAM )
 myMessage = "Hello!"
 #myMessage1 = ""
 #i = 0
@@ -46,7 +46,7 @@ myMessage = "Hello!"
 # print(1)
 
 def game_listen():
-    global I_C, flag
+    global I_C, flag, bit
     global lb,root,left_frame,listbox,show_prmpt,imglbl
     lb={}
     round=0
@@ -78,6 +78,7 @@ def game_listen():
             img = ImageTk.PhotoImage(resize_image)
             imglbl.config(image =img)
             show_prmpt.set(ans)
+            
             t1.start()
             root.update()
             flag=1
@@ -98,11 +99,13 @@ def game_listen():
             print(mbtt)
             messagebox.showinfo("Round Over", mbtt)
             flag=0
+            bit=1
+            t1.join()
             '''
             Display lb in mb
             
             '''
-            time.sleep(5)
+            #time.sleep(5)
         elif(msg=="goddit"):
             I_C=I_C +1
             msg=mySocket.recv(1024).decode()
@@ -202,13 +205,17 @@ def dummyfunc(e):
 def updatetime():
     global bit,root
     t = 90
+    bit=0
     global my_var
     my_var.set(str(t))
 
     while(t!=0):
         if bit ==1:
+            t=0
+            my_var.set(str(t))
+            top_frame.update()
             return
-        root.update()
+        top_frame.update()
         t = t-1
         my_var.set(str(t))
         time.sleep(1)
