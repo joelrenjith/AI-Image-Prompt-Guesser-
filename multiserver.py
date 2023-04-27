@@ -172,6 +172,7 @@ def img_get():
 
             
             s = generateString(df_new)
+            s = s.lower()
             print(s)
             if i>1:
                 retry = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div[1]/div/a")))
@@ -322,6 +323,7 @@ def start_game():
     df = pd.read_csv('words&imgs.csv')
     for x in range(0,3):
         # item = sel_thread()
+        w = 0
         while(1):
             try:
                 data = item[x]
@@ -359,12 +361,14 @@ def start_game():
             check,addr = mySocket.recvfrom(SIZE)
             check = check.decode().lower()
             if check == '__':
-                sendeveryone("finish")
-                sendeveryone(s)
-                sendeveryone(str(leaderboard))
-                break
+                w =w+1
+                if w == len(players):
+                    sendeveryone("finish")
+                    sendeveryone(s)
+                    sendeveryone(str(leaderboard))
+                    break
             if check ==s:
-                leaderboard[players[addr]] += point
+                leaderboard.update({players[addr]:leaderboard[players[addr]] + point})
                 point = point - 1
                 msg = players[addr]+' goddit!!'
                 sendeveryone("goddit")
@@ -384,7 +388,8 @@ def start_game():
                     print(copy)
                 if copy == s:
                     # mySocket.sendto(s.encode('utf-8'),(addr))
-                    leaderboard[players[addr]] += point
+                    leaderboard.update({players[addr]:leaderboard[players[addr]] + point})
+                    # leaderboard[players[addr]] += point
                     point = point - 1
                     msg = players[addr]+' goddit!!'
                     sendeveryone("goddit")
