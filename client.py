@@ -1,5 +1,9 @@
 import sys
 from socket import socket, AF_INET, SOCK_DGRAM
+from scapy.all import *
+from scapy.layers.dhcp import DHCP, BOOTP
+from scapy.layers.inet import IP, UDP
+from scapy.layers.l2 import Ether
 import requests
 import PIL.Image
 from PIL import ImageTk
@@ -8,10 +12,12 @@ from tkinter import messagebox,ttk
 import tkinter.font as tkFont
 import time
 import threading
+from getmac import get_mac_address as gma
 I_C=-1
 SERVER_IP   = '192.168.11.197'
 #SERVER_IP   = '127.0.0.1'
 PORT_NUMBER = 5000
+serveraddr = (SERVER_IP,PORT_NUMBER)
 SIZE = 1024
 bit = 0
 mbt=''
@@ -237,10 +243,36 @@ def on_resize_loading(event):
     print("The width of loading window:", load.winfo_width())
     print("\nThe height of loading window:", load.winfo_height())
     print("\n///////////////////////////////////\n")
+def client_dhcp():
+    client_mac = gma()
+    discover = Ether(dst="ff:ff:ff:ff:ff:ff", src=client_mac) / IP(src="0.0.0.0", dst="255.255.255.255") / UDP(sport=68, dport=67) / BOOTP(chaddr=client_mac) / DHCP(options=[("message-type", "discover"), "end"])
+    print("DISCOVER:")
+    discover.show()
+# Send the discover packet
+    mySocket.sendto(bytes(discover), serveraddr)
+
+# Receive the offer packet
+    data, addr = mySocket.recvfrom(1024)
+    print('\n\n\noffer recieved')
+
+    offer = Ether(data)
+    # Extract the offered IP address
+    offered_ip = offer[BOOTP].yiaddr
+
+# Create a DHCP request packet
+    request = Ether(dst="ff:ff:ff:ff:ff:ff", src=client_mac) / IP(src="0.0.0.0", dst="255.255.255.255") / UDP(sport=68, dport=67) / BOOTP(chaddr=client_mac) / DHCP(options=[("message-type", "request"), ("requested_addr", offered_ip), ("server_id", offer[IP].src), "end"])
+    print("\n\n\nREQUEST:")
+    request.show()
+    # Send the request packet
+    mySocket.sendto(bytes(request), serveraddr)
+
+    # Receive the acknowledgement packet
+    data, addr = mySocket.recvfrom(1024)
+    ack = Ether(data)
 
 def submituser():
     submitted=eyusn.get()
-    
+    client_dhcp()
     mySocket.sendto(submitted.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
     listen()
     #t1 = threading.Thread(target=listen)

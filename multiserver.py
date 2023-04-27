@@ -1,4 +1,8 @@
 import random
+from scapy.all import *
+from scapy.layers.dhcp import DHCP, BOOTP
+from scapy.layers.inet import IP, UDP
+from scapy.layers.l2 import Ether
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -8,17 +12,22 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 from csv import DictWriter
-from socket import socket, gethostbyname, AF_INET, SOCK_DGRAM
+from socket import socket, gethostbyname,gethostname, AF_INET, SOCK_DGRAM
 import os
 import pandas as pd
 from test_selenium_thread import sel_thread
 from threading import Thread
 from server import convert
 import re
+from getmac import get_mac_address as gma
 PORT_NUMBER = 5000
 SIZE = 1024
-
+titles = ['address','allotted']
+df = pd.read_csv('Pool.csv')
+# Define the MAC address of the server and the IP address to offer
+server_mac = gma()
 hostName = gethostbyname( '0.0.0.0' )
+ip = gethostbyname(gethostname())
 mySocket = socket( AF_INET, SOCK_DGRAM )
 mySocket.bind( (hostName, PORT_NUMBER) )
 print ("Test server listening on port {0}\n".format(PORT_NUMBER))
@@ -27,6 +36,66 @@ players = {}
 bit  = 0
 c = 0
 ready_list = []
+def dhcp_server(data,addr):
+    
+        titles = ['address','allotted']
+        df1 = pd.read_csv('Pool.csv')
+        # Define the MAC address of the server and the IP address to offer
+        server_mac = gma()
+        # offered_ip = "192.168.1.100"
+        ip = gethostbyname(gethostname())
+        # Receive a packet
+        # data, addr = mySocket.recvfrom(1024)
+        
+        pkt = Ether(data)
+
+        # Check if it is a DHCP discover packet
+        if DHCP in pkt and pkt[DHCP].options[0][1] == 1:
+            x = df1.index[df1['address']==addr[0]].values
+            if(len(x)>0):
+                offered_ip = list(df1['allotted'].iloc[x])[0]
+            else:
+                print('nah')
+                l = df1["allotted"].iloc[-1]
+                print(l)
+                l = l.split('.')
+                print(l)
+                x = int(l[3])
+                x+=1
+                x  = str(x)
+                while len(x) <3:
+                    x = '0'+x
+                print(x)
+                offered_ip = l[0]+'.'+l[1]+'.'+l[2]+'.'+x
+                
+                entry = {'address':addr[0],'allotted':offered_ip}
+                with open('Pool.csv','a',newline='') as f_object:
+                        writerObject = DictWriter(f_object,fieldnames=titles)
+                        writerObject.writerow(entry)
+                        f_object.close()
+            # Create a DHCP offer packet
+            offer = Ether(dst=pkt[Ether].src, src=server_mac) / IP(src=ip, dst='255.255.255.255') / UDP(sport=67, dport=68) / BOOTP(op=2, yiaddr=offered_ip, siaddr=ip, chaddr=pkt[Ether].src) / DHCP(options=[("message-type", "offer"), ("server_id", ip), ("lease_time", 43200), "end"])
+            print("OFFER:")
+            offer.show()
+            # Send the offer packet
+            print(addr[0])
+            mySocket.sendto(bytes(offer), (addr))
+            print('sent offer')
+
+        # Check if it is a DHCP request packet
+        elif DHCP in pkt and pkt[DHCP].options[0][1] == 3:
+            # Create a DHCP acknowledgement packet
+            ack = Ether(dst=pkt[Ether].src, src=server_mac) / IP(src=ip, dst='255.255.255.255') / UDP(sport=67, dport=68) / BOOTP(op=2, yiaddr=offered_ip, siaddr=ip, chaddr=pkt[Ether].src) / DHCP(options=[("message-type", "ack"), ("server_id", ip), ("lease_time", 43200), "end"])
+            print("\n\n\nACK:")
+
+            ack.show()
+            # Send the acknowledgement packet
+            mySocket.sendto(bytes(ack), (addr))
+
+            # Add the client's address and port number to the client pool
+            # client_pool.append(addr)
+            
+
 def listen():
     global bit,players
     while(1):
@@ -37,7 +106,11 @@ def listen():
         msg = msg.decode()
         if bit ==0:
             if msg!='1':
-                lobby(id,msg)
+                pkt = Ether(msg)
+                if DHCP in pkt:
+                    dhcp_server(msg,id)
+                else:
+                    lobby(id,msg)
                 if len(players) ==1:
                     t1 = Thread(target = img_get)
                     t1.start()
