@@ -14,8 +14,8 @@ import time
 import threading
 from getmac import get_mac_address as gma
 I_C=-1
-#SERVER_IP   = '192.168.11.197'
-SERVER_IP   = '127.0.0.1'
+SERVER_IP   = '192.168.36.197'
+#SERVER_IP   = '127.0.0.1'
 PORT_NUMBER = 5000
 serveraddr = (SERVER_IP,PORT_NUMBER)
 SIZE = 1024
@@ -24,9 +24,11 @@ mbt=''
 ans = 'waiting for string'
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
 flag=0
+round=0
 
 mySocket = socket.socket( AF_INET, SOCK_DGRAM )
 myMessage = "Hello!"
+started=0
 #myMessage1 = ""
 #i = 0
 # while i < 10:
@@ -46,10 +48,9 @@ myMessage = "Hello!"
 # print(1)
 
 def game_listen():
-    global I_C, flag, bit
+    global I_C, flag, bit, round
     global lb,root,left_frame,listbox,show_prmpt,imglbl
     lb={}
-    round=0
     while(1):
         if(flag==0):
             round=round+1
@@ -68,6 +69,9 @@ def game_listen():
                 
             data,addr = mySocket.recvfrom(1024)
             img_link = data.decode()
+            if(img_link=='!!'):
+                bit=2
+                return
             r = requests.get(img_link,allow_redirects=True)
             open('img.jpg','wb').write(r.content)
             ans,addr=mySocket.recvfrom(1024)
@@ -78,10 +82,11 @@ def game_listen():
             img = ImageTk.PhotoImage(resize_image)
             imglbl.config(image =img)
             show_prmpt.set(ans)
-            
-            t1.start()
+            if(started==0):
+                t1.start()
             root.update()
             flag=1
+            bit=0
         # root.update()
         msg,addr=mySocket.recvfrom(1024)
         msg = msg.decode()
@@ -93,14 +98,15 @@ def game_listen():
             lb={k: v for k, v in sorted(lb.items(), key=lambda item: item[1])}
             lb = dict(reversed(list(lb.items())))
             global mbt
+            mbt=''
             for k,v in lb.items():
-                mbt=mbt+str(k)+" : "+str(v)+" points"+"\n"
-            mbtt='End of Round '+str(round)+'\n'+str(3-round)+' Rounds to go\n'+mbt
+                mbt=mbt+str(k)+"    :    "+str(v)+" points"+"\n"
+            mbtt='Answer is:      '+ansstring+'\n\nEnd of Round '+str(round)+'\n'+str(3-round)+' Rounds to go\n\n\n'+mbt
             print(mbtt)
             messagebox.showinfo("Round Over", mbtt)
             flag=0
             bit=1
-            t1.join()
+            #t1.join()
             '''
             Display lb in mb
             
@@ -121,6 +127,7 @@ def game_listen():
             show_prmpt.set(board.decode())
             root.update()
         elif(msg=="!!"):
+            bit=2
             '''
             proceed to finishing screen
             '''
@@ -203,23 +210,34 @@ def dummyfunc(e):
     submit()
 
 def updatetime():
-    global bit,root
+    global bit,root, started, round
+    temp=0
+    started=1
     t = 90
     bit=0
     global my_var
     my_var.set(str(t))
-
-    while(t!=0):
-        if bit ==1:
-            t=0
-            my_var.set(str(t))
-            top_frame.update()
+    while(1):
+        if(bit==2):
             return
-        top_frame.update()
-        t = t-1
-        my_var.set(str(t))
-        time.sleep(1)
-    mySocket.sendto(('__').encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+        while(t!=0):
+            if bit ==1:
+                t=90
+                my_var.set(str(t))
+                top_frame.update()
+                # if(temp<round):
+                #     mySocket.sendto(('__').encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+                #     temp=temp+1
+            else:
+                top_frame.update()
+                t = t-1
+                my_var.set(str(t))
+                time.sleep(1)
+        
+        mySocket.sendto(('__').encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+        bit=1
+
+    # mySocket.sendto(('__').encode('utf-8'),(SERVER_IP,PORT_NUMBER))
     #correct,addr = mySocket.recvfrom(1024)
     # correct = correct.decode()
 
@@ -250,6 +268,7 @@ def on_resize_loading(event):
     print("The width of loading window:", load.winfo_width())
     print("\nThe height of loading window:", load.winfo_height())
     print("\n///////////////////////////////////\n")
+
 def client_dhcp():
     client_mac = gma()
     discover = Ether(dst="ff:ff:ff:ff:ff:ff", src=client_mac) / IP(src="0.0.0.0", dst="255.255.255.255") / UDP(sport=68, dport=67) / BOOTP(chaddr=client_mac) / DHCP(options=[("message-type", "discover"), "end"])
@@ -398,13 +417,14 @@ def nextwindow():
     top_frame.grid(row=0, column=0, padx=10, pady=10)
     subframe= Frame(root, width = 700, height= 400)
     subframe.grid(row=1, column=0, padx=10, pady=10)
-    ldb= 'Leaderboard'
+    ldb=StringVar()
+    ldb.set("Leaderboard:")
     # global siz28
     # global siz35
     global mbt
     lb = Label(top_frame,textvariable=ldb, font=sz35)
     lb.grid(row=0,column=0, padx=10, pady=10)
-    alb = Label(top_frame,textvariable=mbt, font=sz28)
+    alb = Label(subframe,text=mbt, font=sz28)
     alb.grid(row=0,column=0, padx=10, pady=10)
     time.sleep(10)
     root.destroy()
