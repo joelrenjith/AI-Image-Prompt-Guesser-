@@ -256,6 +256,7 @@ def client_dhcp():
     print('\n\n\noffer recieved')
 
     offer = Ether(data)
+    offer.show()
     # Extract the offered IP address
     offered_ip = offer[BOOTP].yiaddr
 
@@ -269,7 +270,8 @@ def client_dhcp():
     # Receive the acknowledgement packet
     data, addr = mySocket.recvfrom(1024)
     ack = Ether(data)
-
+    print('ack recieved')
+    ack.show()
 def submituser():
     submitted=eyusn.get()
     client_dhcp()

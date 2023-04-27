@@ -75,8 +75,8 @@ def dhcp_server(data,addr):
                         f_object.close()
             # Create a DHCP offer packet
             offer = Ether(dst=pkt[Ether].src, src=server_mac) / IP(src=ip, dst='255.255.255.255') / UDP(sport=67, dport=68) / BOOTP(op=2, yiaddr=offered_ip, siaddr=ip, chaddr=pkt[Ether].src) / DHCP(options=[("message-type", "offer"), ("server_id", ip), ("lease_time", 43200), "end"])
-            print("OFFER:")
-            offer.show()
+            # print("OFFER:")
+            # offer.show()
             # Send the offer packet
             print(addr[0])
             mySocket.sendto(bytes(offer), (addr))
@@ -86,9 +86,9 @@ def dhcp_server(data,addr):
         elif DHCP in pkt and pkt[DHCP].options[0][1] == 3:
             # Create a DHCP acknowledgement packet
             ack = Ether(dst=pkt[Ether].src, src=server_mac) / IP(src=ip, dst='255.255.255.255') / UDP(sport=67, dport=68) / BOOTP(op=2, yiaddr=offered_ip, siaddr=ip, chaddr=pkt[Ether].src) / DHCP(options=[("message-type", "ack"), ("server_id", ip), ("lease_time", 43200), "end"])
-            print("\n\n\nACK:")
+            # print("\n\n\nACK:")
 
-            ack.show()
+            # ack.show()
             # Send the acknowledgement packet
             mySocket.sendto(bytes(ack), (addr))
 
