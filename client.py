@@ -14,8 +14,8 @@ import time
 import threading
 from getmac import get_mac_address as gma
 I_C=-1
-SERVER_IP   = '192.168.36.197'
-#SERVER_IP   = '127.0.0.1'
+# SERVER_IP   = '192.168.36.197'
+SERVER_IP   = '127.0.0.1'
 PORT_NUMBER = 5000
 serveraddr = (SERVER_IP,PORT_NUMBER)
 SIZE = 1024
