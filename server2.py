@@ -311,7 +311,7 @@ def start_game():
     for i in players:
         leaderboard[players[i]] = 0
     print('game started')
-    df = pd.read_csv('words&imgs.csv')
+    # df = pd.read_csv('words&imgs.csv')
     for x in range(0,3):
         # item = sel_thread()
         w = 0
