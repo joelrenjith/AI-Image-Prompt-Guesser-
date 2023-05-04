@@ -66,7 +66,7 @@ def dummyfunc(e):
 
 def updatetime():
     global bit
-    t = 3
+    t = 90
     global my_var
     my_var.set(str(t))
    
