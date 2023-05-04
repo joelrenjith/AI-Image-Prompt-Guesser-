@@ -15,9 +15,9 @@ from csv import DictWriter
 from socket import socket, gethostbyname,gethostname, AF_INET, SOCK_DGRAM
 import os
 import pandas as pd
-from test_selenium_thread import sel_thread
+# from test_selenium_thread import sel_thread
 from threading import Thread
-from server import convert
+from server1 import convert
 import re
 from getmac import get_mac_address as gma
 PORT_NUMBER = 5000
