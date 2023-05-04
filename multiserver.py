@@ -127,14 +127,14 @@ def generateString(x):
 def img_get():
     global item
     try:
-        PATH = Service('C:\Program Files (x86)\chromedriver.exe')
+        PATH = Service(r'C:\Users\joelr\Downloads\installers\chromedriver_win32\chromedriver.exe')
         options = Options()
         #options.binary_location = r'C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe'
         options.accept_insecure_certs = True
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--allow-running-insecure-content')
         options.binary_location = r'C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe'
-    
+        # options.headless = True
        
         dic = {'frixionmaster@gmail.com':'hello12345678','joelrenjith10@gmail.com':'JPYVDTLX','garimangangwani@gmail.com':'CJNYJAMN','diyx19@gmail.com':'JFLBAUEC'}
         ch = random.choice(list(dic))
